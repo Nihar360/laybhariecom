@@ -10,7 +10,7 @@ import { toast } from 'sonner@2.0.3';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 export function ProductDetailsPage() {
-  const { pageData, goBack } = useNavigation();
+  const { pageData, goBack, navigateTo } = useNavigation();
   const { addToCart } = useCart();
   const productId = pageData?.productId;
   

@@ -1,0 +1,74 @@
+You are an expert React + Tailwind + shadcn/ui developer.
+
+I already have a `ProductDetailsPage.jsx` and `CartDrawer.jsx` similar to the ones below (importing `Button`, `Sheet`, `Badge`, `Tabs`, etc.). 
+I want you to now implement a **complete checkout flow** with proper navigation and UI consistency.
+
+✅ Requirements:
+
+1. **Button Integration & Navigation**
+   - When user clicks **"Buy Now"** in `ProductDetailsPage`, add the item to cart and navigate directly to `/checkout`.
+   - When user clicks **"Checkout"** in `CartDrawer`, also navigate to `/checkout`.
+   - Navigation can use React Router (`useNavigate`) or custom context navigation (if already defined).
+
+2. **Checkout Page (CheckoutPage.jsx)**
+   - Create a new component `CheckoutPage`.
+   - Keep UI consistent with the rest of the app (white background, Tailwind grid layout, rounded sections, subtle borders).
+   - Divide into two sections:
+     - **Left:** Address & Contact form
+       - Full Name
+       - Mobile Number
+       - Email
+       - Address Line 1
+       - Address Line 2 (optional)
+       - City
+       - State
+       - Zip Code
+       - Country (dropdown)
+     - **Right:** Order Summary
+       - List all cart items (image, name, quantity, price)
+       - Show subtotal, shipping (flat ₹50), total
+       - "Pay Now" button at the bottom
+
+3. **Form Handling**
+   - Use `useState` for form inputs.
+   - Validate required fields (show toast or inline error if empty).
+
+4. **Dummy Razorpay Payment Gateway**
+   - When “Pay Now” button is clicked:
+     - Validate form
+     - Then open a **modal dialog box** (styled like Razorpay)
+       - Title: “Razorpay Secure Payment”
+       - Show total amount, UPI / Card / Wallet options (just buttons, no real logic)
+       - “Pay ₹xxxx” button (simulated)
+     - On clicking “Pay ₹xxxx”, close modal and show success toast: “Payment Successful!”
+
+5. **Navigation After Payment**
+   - After success, navigate to `/order-success` page that shows:
+     - A green checkmark icon
+     - Message: “Your order has been placed successfully!”
+     - Button: “Continue Shopping” → navigates back to home
+
+6. **Styling**
+   - Use Tailwind + shadcn/ui components (Card, Input, Button, etc.)
+   - Keep consistent padding, rounded corners (`rounded-2xl`), and clean spacing.
+   - Responsive for mobile & desktop.
+
+7. **Extra Details**
+   - Add shipping icons (Truck, Shield, RefreshCw) in checkout summary footer to match product details style.
+   - Ensure total updates dynamically from cart context.
+   - Reuse `useCart()` context for fetching cart data & total.
+
+🧩 Deliverables:
+- `CheckoutPage.jsx`
+- Optional: `OrderSuccessPage.jsx`
+- Updated navigation integration in:
+  - `CartDrawer.jsx` → on Checkout click
+  - `ProductDetailsPage.jsx` → on Buy Now click
+
+🎯 Goal:
+After implementing this, I should be able to:
+- Add products to cart
+- Open cart drawer
+- Click checkout → go to checkout page
+- Fill form → click Pay Now → see dummy Razorpay dialog → success message → continue shopping.
+

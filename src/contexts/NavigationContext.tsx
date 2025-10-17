@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type Page = 'home' | 'category' | 'product' | 'cart';
+type Page = 'home' | 'category' | 'product' | 'cart' | 'checkout' | 'order-success';
 
 interface NavigationContextType {
   currentPage: Page;

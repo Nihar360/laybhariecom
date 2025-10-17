@@ -200,18 +200,18 @@ export function CheckoutPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-8 py-20 max-w-7xl">
-        <h1 className="text-4xl font-bold mb-20 text-center">Checkout</h1>
+      <div className="container mx-auto px-8 py-24 max-w-7xl">
+        <h1 className="text-4xl font-bold mb-24 text-center">Checkout</h1>
 
-        <div className="grid lg:grid-cols-3 gap-20 lg:gap-28">
-          <div className="lg:col-span-2 space-y-20">
+        <div className="grid lg:grid-cols-3 gap-24 lg:gap-32">
+          <div className="lg:col-span-2 space-y-32">
             <Card className="rounded-3xl shadow-lg border-gray-200">
-              <CardContent className="p-12">
-                <h2 className="text-gray-500 font-semibold text-base mb-10 uppercase tracking-wide">
+              <CardContent className="p-16">
+                <h2 className="text-gray-500 font-semibold text-base mb-12 uppercase tracking-wide">
                   Delivery Information
                 </h2>
-                <div className="space-y-7">
-                  <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-8">
+                  <div className="grid md:grid-cols-2 gap-8">
                     <div>
                       <Label htmlFor="fullName" className="text-base font-medium mb-2 block">
                         Full Name *
@@ -296,7 +296,7 @@ export function CheckoutPage() {
                     </Select>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-8">
                     <div>
                       <Label htmlFor="state" className="text-base font-medium mb-2 block">
                         State *
@@ -358,8 +358,8 @@ export function CheckoutPage() {
             </Card>
 
             <Card className="rounded-3xl shadow-lg border-gray-200">
-              <CardContent className="p-12">
-                <h2 className="text-gray-500 font-semibold text-base mb-10 uppercase tracking-wide">
+              <CardContent className="p-16">
+                <h2 className="text-gray-500 font-semibold text-base mb-12 uppercase tracking-wide">
                   Payment Method
                 </h2>
                 <RadioGroup 
@@ -400,7 +400,7 @@ export function CheckoutPage() {
 
                 <Button
                   size="lg"
-                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold mt-8 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg"
+                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold mt-12 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg"
                   onClick={handlePayment}
                 >
                   {paymentMethod === 'razorpay' ? `Pay Now ₹${total.toFixed(2)}` : 'Place Order'}
@@ -411,12 +411,12 @@ export function CheckoutPage() {
 
           <div>
             <Card className="rounded-3xl shadow-lg border-gray-200 sticky top-6">
-              <CardContent className="p-12">
-                <h2 className="text-gray-500 font-semibold text-base mb-10 uppercase tracking-wide">
+              <CardContent className="p-16">
+                <h2 className="text-gray-500 font-semibold text-base mb-12 uppercase tracking-wide">
                   Order Summary
                 </h2>
                 
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="max-h-72 overflow-y-auto space-y-4 pr-2">
                     {cart.map((item, index) => (
                       <div key={`${item.id}-${item.size}-${index}`} className="flex gap-4 pb-4 border-b border-gray-100 last:border-0">
@@ -441,8 +441,8 @@ export function CheckoutPage() {
                     ))}
                   </div>
 
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex gap-3">
+                  <div className="pt-6 border-t border-gray-200">
+                    <div className="flex gap-4">
                       <Input
                         placeholder="Enter coupon code"
                         value={coupon}
@@ -460,7 +460,7 @@ export function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-200 space-y-3">
+                  <div className="pt-6 border-t border-gray-200 space-y-4">
                     <div className="flex justify-between text-base">
                       <span className="text-gray-600 font-medium">Subtotal</span>
                       <span className="font-semibold">${subtotal.toFixed(2)}</span>
@@ -475,13 +475,13 @@ export function CheckoutPage() {
                       <span className="text-gray-600 font-medium">Shipping</span>
                       <span className="font-semibold">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between text-xl font-bold border-t pt-4 mt-4">
+                    <div className="flex justify-between text-xl font-bold border-t pt-6 mt-6">
                       <span>Total</span>
                       <span className="text-blue-600">${total.toFixed(2)}</span>
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 space-y-4 text-sm">
+                  <div className="pt-8 border-t border-gray-200 space-y-5 text-sm">
                     <div className="flex items-center gap-3">
                       <Truck className="w-6 h-6 text-blue-600" />
                       <span className="text-gray-600">Free shipping on orders over $25</span>

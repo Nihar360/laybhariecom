@@ -1,0 +1,78 @@
+### 🧾 Required Changes:
+
+1. **Scale Up Card Boxes**
+   - Slightly increase the size (padding, font, and overall height) of both:
+     - "Delivery Information"
+     - "Order Summary"
+   - Use: `p-8`, `text-base`, and `rounded-2xl shadow-sm` for both.
+   - Keep responsive design intact.
+
+2. **In-Card Titles**
+   - Move headings **inside** the card content (as soft hint titles).
+   - Example: Instead of a `CardHeader` title, show:
+     - “Delivery Information” → as `p-2 text-gray-500 font-medium text-sm` at the top inside the card.
+     - Same for “Order Summary”.
+
+3. **State → City Dropdown Logic**
+   - Replace text inputs for “State” and “City” with **two dependent dropdown menus**.
+   - Implement:
+     - A `Select` for **State** containing all **Indian states** (Andhra Pradesh, Maharashtra, Gujarat, etc.).
+     - Once the user selects a state, the **City** dropdown populates dynamically with that state’s major cities.
+   - Disable the city dropdown until a state is selected.
+   - Example structure:
+     ```jsx
+     const stateCityData = {
+       Maharashtra: ["Mumbai", "Pune", "Nagpur", "Nashik"],
+       Gujarat: ["Ahmedabad", "Surat", "Vadodara", "Rajkot"],
+       Karnataka: ["Bengaluru", "Mysuru", "Mangaluru"],
+       // ... all Indian states
+     };
+     ```
+   - Use `Select` components from shadcn/ui for both.
+
+4. **Add Payment Method Section (Below Address Form)**
+   - At the bottom of the left column (after address inputs), create a new section:
+     - Title: “Payment Method”
+     - Two options as **radio buttons**:
+       - (A) Razorpay / UPI / Cards
+       - (B) Cash on Delivery (COD)
+     - Store selected option in a state: `paymentMethod`.
+     - Default: Razorpay.
+     - Use Tailwind for nice spacing (`flex items-center gap-3 mt-4`).
+
+5. **Move Pay Button**
+   - Remove the **Pay Now** button from inside the **Order Summary** card.
+   - Instead, place it **below the Payment Section** (end of left column).
+   - Logic:
+     - If `paymentMethod === "razorpay"` → show button text: `Pay Now ₹{total}`
+     - If `paymentMethod === "cod"` → show button text: `Place Order`
+     - Keep same black styling (`bg-black hover:bg-gray-800`).
+     - Keep validation and success logic same.
+     - On COD click → directly navigate to success page with toast “Order placed successfully via COD!”
+
+6. **Add Coupon / Discount Box**
+   - In **Order Summary**, above the Subtotal section:
+     - Add an input + button row for coupons:
+       - Placeholder: “Enter coupon or discount code”
+       - Button: “Apply”
+       - On click → show toast:
+         - If input is empty → “Please enter a valid coupon code.”
+         - If entered → “Coupon applied successfully! (10% off)” and adjust total price (reduce by 10%).
+       - Use Tailwind grid or flex for clean layout:
+         ```jsx
+         <div className="flex gap-2">
+           <Input placeholder="Enter coupon code" value={coupon} onChange={(e) => setCoupon(e.target.value)} />
+           <Button onClick={applyCoupon}>Apply</Button>
+         </div>
+         ```
+
+---
+
+### ⚙️ Behavioral Flow After Changes:
+- User fills Delivery + selects State → City auto-fills accordingly.
+- Chooses payment option (Razorpay / COD).
+- Sees total in Order Summary.
+- If Razorpay selected → “Pay Now ₹xxx”.
+- If COD selected → “Place Order”.
+- Coupon can reduce total dynamically.
+- Everything else (toast, validation, navigation, RazorpayModal) must keep working.

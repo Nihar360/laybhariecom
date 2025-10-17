@@ -62,9 +62,27 @@ export function ProductDetailsPage() {
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
-    // In a real app, navigate to checkout
-    toast.success('Proceeding to checkout...');
+    if (product.sizes && !selectedSize) {
+      toast.error('Please select a size');
+      return;
+    }
+    if (product.colors && !selectedColor) {
+      toast.error('Please select a color');
+      return;
+    }
+
+    addToCart(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        size: selectedSize,
+        color: selectedColor,
+      },
+      quantity
+    );
+    navigateTo('checkout');
   };
 
   return (

@@ -21,8 +21,7 @@ export function CartDrawer() {
 
   const handleCheckout = () => {
     setOpen(false);
-    // In a real app, navigate to checkout page
-    alert('Proceeding to checkout...');
+    navigateTo('checkout');
   };
 
   return (

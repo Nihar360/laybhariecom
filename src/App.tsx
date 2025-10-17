@@ -11,6 +11,8 @@ import { Newsletter } from "./components/Newsletter";
 import { Footer } from "./components/Footer";
 import { CategoryPage } from "./pages/CategoryPage";
 import { ProductDetailsPage } from "./pages/ProductDetailsPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
+import { OrderSuccessPage } from "./pages/OrderSuccessPage";
 import { Toaster } from "./components/ui/sonner";
 
 function AppContent() {
@@ -31,6 +33,10 @@ function AppContent() {
         return <CategoryPage />;
       case "product":
         return <ProductDetailsPage />;
+      case "checkout":
+        return <CheckoutPage />;
+      case "order-success":
+        return <OrderSuccessPage />;
       default:
         return (
           <>
@@ -45,7 +51,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen">
-      <Header />
+      {currentPage !== "checkout" && currentPage !== "order-success" && <Header />}
       <main>{renderPage()}</main>
       {currentPage === "home" && <Footer />}
       <Toaster />

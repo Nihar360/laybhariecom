@@ -60,6 +60,14 @@ This is an e-commerce homepage for "SPICE HOUSE" - a premium spice retail store 
   - Dummy Razorpay payment gateway modal
   - OrderSuccessPage with success animation
   - Navigation from product details "Buy Now" and cart "Checkout" buttons
+- ✅ Enhanced CheckoutPage with improved UX:
+  - Scaled up card boxes with larger padding (p-8) and text (text-base)
+  - Moved card titles inside as soft hint labels
+  - Added dependent State-City dropdowns with all Indian states and major cities
+  - Implemented Payment Method selection (Razorpay/UPI/Cards or Cash on Delivery)
+  - Added Coupon/Discount box with 10% discount functionality
+  - Moved payment button below payment section with conditional text
+  - COD orders now skip payment modal and go directly to success page
 
 ## Development
 

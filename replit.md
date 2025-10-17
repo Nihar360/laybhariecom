@@ -48,6 +48,7 @@ This is an e-commerce homepage for "SPICE HOUSE" - a premium spice retail store 
 
 ## Recent Changes (October 17, 2025)
 - ✅ Configured Vite dev server for Replit environment (port 5000, host 0.0.0.0)
+- ✅ Added allowedHosts configuration for Replit proxy domains (.repl.co, .replit.dev)
 - ✅ Created TypeScript configuration (tsconfig.json)
 - ✅ Set up Tailwind CSS with @tailwindcss/postcss
 - ✅ Installed all npm dependencies

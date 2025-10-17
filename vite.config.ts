@@ -56,6 +56,7 @@
     server: {
       port: 5000,
       host: '0.0.0.0',
+      allowedHosts: ['.repl.co', '.replit.dev'],
       hmr: {
         clientPort: 443,
       },

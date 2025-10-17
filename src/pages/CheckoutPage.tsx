@@ -200,14 +200,14 @@ export function CheckoutPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-16 max-w-7xl">
-        <h1 className="text-4xl font-bold mb-16 text-center">Checkout</h1>
+      <div className="container mx-auto px-8 py-20 max-w-7xl">
+        <h1 className="text-4xl font-bold mb-20 text-center">Checkout</h1>
 
-        <div className="grid lg:grid-cols-3 gap-16 lg:gap-20">
-          <div className="lg:col-span-2 space-y-16">
+        <div className="grid lg:grid-cols-3 gap-20 lg:gap-28">
+          <div className="lg:col-span-2 space-y-20">
             <Card className="rounded-3xl shadow-lg border-gray-200">
-              <CardContent className="p-10">
-                <h2 className="text-gray-500 font-semibold text-base mb-8 uppercase tracking-wide">
+              <CardContent className="p-12">
+                <h2 className="text-gray-500 font-semibold text-base mb-10 uppercase tracking-wide">
                   Delivery Information
                 </h2>
                 <div className="space-y-7">
@@ -358,8 +358,8 @@ export function CheckoutPage() {
             </Card>
 
             <Card className="rounded-3xl shadow-lg border-gray-200">
-              <CardContent className="p-10">
-                <h2 className="text-gray-500 font-semibold text-base mb-8 uppercase tracking-wide">
+              <CardContent className="p-12">
+                <h2 className="text-gray-500 font-semibold text-base mb-10 uppercase tracking-wide">
                   Payment Method
                 </h2>
                 <RadioGroup 
@@ -411,8 +411,8 @@ export function CheckoutPage() {
 
           <div>
             <Card className="rounded-3xl shadow-lg border-gray-200 sticky top-6">
-              <CardContent className="p-10">
-                <h2 className="text-gray-500 font-semibold text-base mb-8 uppercase tracking-wide">
+              <CardContent className="p-12">
+                <h2 className="text-gray-500 font-semibold text-base mb-10 uppercase tracking-wide">
                   Order Summary
                 </h2>
                 

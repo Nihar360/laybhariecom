@@ -68,6 +68,20 @@ This is an e-commerce homepage for "SPICE HOUSE" - a premium spice retail store 
   - Added Coupon/Discount box with 10% discount functionality
   - Moved payment button below payment section with conditional text
   - COD orders now skip payment modal and go directly to success page
+- ✅ Modern UI Enhancements:
+  - Increased spacing and padding across all sections (p-10, gap-10, h-12 inputs, h-14 buttons)
+  - Blue accent color scheme with modern hover and focus effects
+  - Enhanced card styling (rounded-3xl, shadow-lg)
+  - Better visual hierarchy with larger fonts and spacious layout
+- ✅ Dynamic Country-Based Selection:
+  - Country selector dynamically updates State and City dropdowns
+  - Support for India, USA, UK, and Canada with region-specific data
+  - Smart state/city reset when country changes
+  - Clear disabled states with helpful placeholder messages
+- ✅ Smart Payment Rules:
+  - Cash on Delivery (COD) only available for India
+  - Auto-switches to Razorpay when non-India country selected
+  - Visual feedback with disabled styling and informative messages
 
 ## Development
 

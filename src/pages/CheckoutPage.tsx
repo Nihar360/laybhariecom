@@ -180,7 +180,7 @@ export function CheckoutPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-500 mb-4">Your cart is empty</p>
-          <Button onClick={() => navigateTo('home')}>Go Shopping</Button>
+          <Button onClick={() => navigateTo('home')} className="bg-black hover:bg-gray-800">Go Shopping</Button>
         </div>
       </div>
     );
@@ -400,7 +400,7 @@ export function CheckoutPage() {
 
                 <Button
                   size="lg"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold mt-8 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg"
+                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold mt-8 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg"
                   onClick={handlePayment}
                 >
                   {paymentMethod === 'razorpay' ? `Pay Now ₹${total.toFixed(2)}` : 'Place Order'}
@@ -453,7 +453,7 @@ export function CheckoutPage() {
                       <Button 
                         onClick={applyCoupon}
                         disabled={couponApplied}
-                        className="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium whitespace-nowrap"
+                        className="h-12 px-6 bg-black hover:bg-gray-800 text-white font-medium whitespace-nowrap"
                       >
                         Apply
                       </Button>

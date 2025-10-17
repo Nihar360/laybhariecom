@@ -400,7 +400,7 @@ export function CheckoutPage() {
 
                 <Button
                   size="lg"
-                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold mt-12 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg"
+                  className="bg-black hover:bg-gray-800 text-white font-semibold mt-12 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg px-16"
                   onClick={handlePayment}
                 >
                   {paymentMethod === 'razorpay' ? `Pay Now ₹${total.toFixed(2)}` : 'Place Order'}

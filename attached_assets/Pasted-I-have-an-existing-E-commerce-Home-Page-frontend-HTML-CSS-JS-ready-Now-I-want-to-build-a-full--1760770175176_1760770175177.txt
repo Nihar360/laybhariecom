@@ -1,0 +1,65 @@
+I have an existing E-commerce Home Page frontend (HTML, CSS, JS) ready. 
+Now I want to build a full backend using *Spring Boot* connected with *MySQL* database. 
+Please give me:
+
+1. *Detailed Project Structure*
+   - Include all necessary folders like controller, service, repository, model, config, dto, and exception.
+   - Follow standard Spring Boot layered architecture (Controller → Service → Repository).
+   - Mention where to keep application.properties and database connection details.
+
+2. *Tech Stack*
+   - Backend: Spring Boot (latest stable version)
+   - Database: MySQL
+   - ORM: Spring Data JPA + Hibernate
+   - API Testing: Postman
+   - Build Tool: Maven
+   - Security: Spring Security (JWT based login)
+   - IDE: IntelliJ or Eclipse
+   - Other: Lombok for boilerplate reduction, Validation annotations for input checks
+
+3. *Modules and Features (Phase 1 - Backend only)*
+   - *User Module:* Register, Login (JWT Auth), Profile details
+   - *Product Module:* Add product, Get all products, Get product by ID, Search by name/category
+   - *Cart Module:* Add to cart, View cart, Remove item, Checkout
+   - *Order Module:* Place order, View order history by user
+   - *Database Schema:* Include user, product, cart, order, and order_items tables with relationships
+
+4. *Endpoints (REST API design)*
+   For each module, list all API endpoints with:
+   - HTTP method
+   - URL path
+   - Description
+   - Request body example (JSON)
+   - Response example (JSON)
+   Example: 
+   POST /api/users/register → register new user  
+   POST /api/users/login → login user and return JWT token  
+   GET /api/products → fetch all products
+
+5. *Step-by-Step Development Phases*
+   - *Phase 1:* Setup Spring Boot project and MySQL connection  
+   - *Phase 2:* Create model classes and database entities  
+   - *Phase 3:* Implement repositories (Spring Data JPA)  
+   - *Phase 4:* Implement services and controllers  
+   - *Phase 5:* Add DTOs and validation  
+   - *Phase 6:* Add JWT Authentication for login and protected routes  
+   - *Phase 7:* Test APIs in Postman  
+   - *Phase 8:* Connect frontend (HTML, JS) with backend using Fetch or Axios  
+
+6. *Project Flow Explanation*
+   Explain how request flows:
+   Frontend → REST API Controller → Service → Repository → MySQL  
+   And how JWT authentication is used for securing user/cart/order routes.
+
+7. *Next Part (for later)*
+   Prepare base idea for *Admin Panel (Phase 2)*:
+   - Admin login
+   - Add/Edit/Delete products
+   - View all orders
+   - Manage users
+
+Please give me:
+- A clear *folder structure*
+- A *list of all API endpoints* with details
+- A *step-by-step action plan* so I can build this backend gradually.
+Make it practical so I can follow and implement it in IntelliJ with Maven and MySQL.

@@ -200,20 +200,20 @@ export function CheckoutPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-8 py-24 max-w-7xl">
-        <h1 className="text-4xl font-bold mb-24 text-center">Checkout</h1>
+      <div className="container mx-auto px-8 py-28 max-w-7xl">
+        <h1 className="text-5xl font-bold mb-28 text-center">Checkout</h1>
 
-        <div className="grid lg:grid-cols-3 gap-24 lg:gap-32">
-          <div className="lg:col-span-2 space-y-32">
-            <Card className="rounded-3xl shadow-lg border-gray-200">
-              <CardContent className="p-16">
-                <h2 className="text-gray-500 font-semibold text-base mb-12 uppercase tracking-wide">
+        <div className="grid lg:grid-cols-3 gap-10 lg:gap-12">
+          <div className="lg:col-span-2 space-y-10">
+            <Card className="rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow">
+              <CardContent className="p-10">
+                <h2 className="text-gray-600 font-semibold text-lg mb-8 uppercase tracking-wide">
                   Delivery Information
                 </h2>
-                <div className="space-y-8">
-                  <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-7">
+                  <div className="grid md:grid-cols-2 gap-7">
                     <div>
-                      <Label htmlFor="fullName" className="text-base font-medium mb-2 block">
+                      <Label htmlFor="fullName" className="text-base font-semibold mb-3 block text-gray-700">
                         Full Name *
                       </Label>
                       <Input
@@ -221,11 +221,11 @@ export function CheckoutPage() {
                         value={formData.fullName}
                         onChange={(e) => handleInputChange('fullName', e.target.value)}
                         placeholder="John Doe"
-                        className="h-12 text-base px-4"
+                        className="h-14 text-base px-5 rounded-lg"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="mobile" className="text-base font-medium mb-2 block">
+                      <Label htmlFor="mobile" className="text-base font-semibold mb-3 block text-gray-700">
                         Mobile Number *
                       </Label>
                       <Input
@@ -234,13 +234,13 @@ export function CheckoutPage() {
                         value={formData.mobile}
                         onChange={(e) => handleInputChange('mobile', e.target.value)}
                         placeholder="9876543210"
-                        className="h-12 text-base px-4"
+                        className="h-14 text-base px-5 rounded-lg"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="email" className="text-base font-medium mb-2 block">
+                    <Label htmlFor="email" className="text-base font-semibold mb-3 block text-gray-700">
                       Email Address *
                     </Label>
                     <Input
@@ -249,12 +249,12 @@ export function CheckoutPage() {
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="john@example.com"
-                      className="h-12 text-base px-4"
+                      className="h-14 text-base px-5 rounded-lg"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="addressLine1" className="text-base font-medium mb-2 block">
+                    <Label htmlFor="addressLine1" className="text-base font-semibold mb-3 block text-gray-700">
                       Address Line 1 *
                     </Label>
                     <Input
@@ -262,12 +262,12 @@ export function CheckoutPage() {
                       value={formData.addressLine1}
                       onChange={(e) => handleInputChange('addressLine1', e.target.value)}
                       placeholder="House No., Street Name"
-                      className="h-12 text-base px-4"
+                      className="h-14 text-base px-5 rounded-lg"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="addressLine2" className="text-base font-medium mb-2 block">
+                    <Label htmlFor="addressLine2" className="text-base font-semibold mb-3 block text-gray-700">
                       Address Line 2
                     </Label>
                     <Input
@@ -275,16 +275,16 @@ export function CheckoutPage() {
                       value={formData.addressLine2}
                       onChange={(e) => handleInputChange('addressLine2', e.target.value)}
                       placeholder="Landmark, Area (Optional)"
-                      className="h-12 text-base px-4"
+                      className="h-14 text-base px-5 rounded-lg"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="country" className="text-base font-medium mb-2 block">
+                    <Label htmlFor="country" className="text-base font-semibold mb-3 block text-gray-700">
                       Country *
                     </Label>
                     <Select value={formData.country} onValueChange={(value) => handleInputChange('country', value)}>
-                      <SelectTrigger className="h-12 text-base">
+                      <SelectTrigger className="h-14 text-base rounded-lg">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -296,17 +296,17 @@ export function CheckoutPage() {
                     </Select>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-8">
+                  <div className="grid md:grid-cols-2 gap-7">
                     <div>
-                      <Label htmlFor="state" className="text-base font-medium mb-2 block">
+                      <Label htmlFor="state" className="text-base font-semibold mb-3 block text-gray-700">
                         State *
                       </Label>
-                      <Select 
-                        value={formData.state} 
+                      <Select
+                        value={formData.state}
                         onValueChange={(value) => handleInputChange('state', value)}
                         disabled={!formData.country}
                       >
-                        <SelectTrigger className="h-12 text-base">
+                        <SelectTrigger className="h-14 text-base rounded-lg">
                           <SelectValue placeholder={formData.country ? "Select State" : "Select Country first"} />
                         </SelectTrigger>
                         <SelectContent>
@@ -319,15 +319,15 @@ export function CheckoutPage() {
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="city" className="text-base font-medium mb-2 block">
+                      <Label htmlFor="city" className="text-base font-semibold mb-3 block text-gray-700">
                         City *
                       </Label>
-                      <Select 
-                        value={formData.city} 
+                      <Select
+                        value={formData.city}
                         onValueChange={(value) => handleInputChange('city', value)}
                         disabled={!formData.state}
                       >
-                        <SelectTrigger className="h-12 text-base">
+                        <SelectTrigger className="h-14 text-base rounded-lg">
                           <SelectValue placeholder={formData.state ? "Select City" : "Select State first"} />
                         </SelectTrigger>
                         <SelectContent>
@@ -342,7 +342,7 @@ export function CheckoutPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="zipCode" className="text-base font-medium mb-2 block">
+                    <Label htmlFor="zipCode" className="text-base font-semibold mb-3 block text-gray-700">
                       Zip Code *
                     </Label>
                     <Input
@@ -350,49 +350,53 @@ export function CheckoutPage() {
                       value={formData.zipCode}
                       onChange={(e) => handleInputChange('zipCode', e.target.value)}
                       placeholder="400001"
-                      className="h-12 text-base px-4"
+                      className="h-14 text-base px-5 rounded-lg"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="rounded-3xl shadow-lg border-gray-200">
-              <CardContent className="p-16">
-                <h2 className="text-gray-500 font-semibold text-base mb-12 uppercase tracking-wide">
+            <Card className="rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow">
+              <CardContent className="p-10">
+                <h2 className="text-gray-600 font-semibold text-lg mb-8 uppercase tracking-wide">
                   Payment Method
                 </h2>
-                <RadioGroup 
-                  value={paymentMethod} 
+                <RadioGroup
+                  value={paymentMethod}
                   onValueChange={(value) => setPaymentMethod(value as 'razorpay' | 'cod')}
-                  className="space-y-5"
+                  className="space-y-4"
                 >
-                  <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer border border-transparent hover:border-blue-200">
-                    <RadioGroupItem value="razorpay" id="razorpay" className="border-2 border-blue-500 text-blue-600 focus:ring-blue-500" />
-                    <Label htmlFor="razorpay" className="text-base font-medium cursor-pointer flex-1">
+                  <div className="flex items-center gap-5 p-6 rounded-xl hover:bg-blue-50 transition-all duration-200 cursor-pointer border-2 border-gray-200 hover:border-blue-400 hover:shadow-md">
+                    <RadioGroupItem
+                      value="razorpay"
+                      id="razorpay"
+                      className="w-5 h-5 border-2 border-blue-500 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                    />
+                    <Label htmlFor="razorpay" className="text-lg font-medium cursor-pointer flex-1 text-gray-800">
                       Razorpay / UPI / Cards
                     </Label>
                   </div>
-                  <div className={`flex items-center gap-4 p-4 rounded-xl transition-colors border ${
-                    !isCodAllowed 
-                      ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200' 
-                      : 'cursor-pointer hover:bg-blue-50 border-transparent hover:border-blue-200'
+                  <div className={`flex items-center gap-5 p-6 rounded-xl transition-all duration-200 border-2 ${
+                    !isCodAllowed
+                      ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
+                      : 'cursor-pointer hover:bg-blue-50 border-gray-200 hover:border-blue-400 hover:shadow-md'
                   }`}>
-                    <RadioGroupItem 
-                      value="cod" 
-                      id="cod" 
+                    <RadioGroupItem
+                      value="cod"
+                      id="cod"
                       disabled={!isCodAllowed}
-                      className="border-2 border-blue-500 text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" 
+                      className="w-5 h-5 border-2 border-blue-500 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                     <div className="flex-1">
-                      <Label 
-                        htmlFor="cod" 
-                        className={`text-base font-medium ${isCodAllowed ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                      <Label
+                        htmlFor="cod"
+                        className={`text-lg font-medium ${isCodAllowed ? 'cursor-pointer text-gray-800' : 'cursor-not-allowed text-gray-500'}`}
                       >
                         Cash on Delivery (COD)
                       </Label>
                       {!isCodAllowed && (
-                        <p className="text-sm text-gray-500 mt-1">Only available for India</p>
+                        <p className="text-sm text-gray-500 mt-2">Only available for India</p>
                       )}
                     </div>
                   </div>
@@ -400,7 +404,7 @@ export function CheckoutPage() {
 
                 <Button
                   size="lg"
-                  className="bg-black hover:bg-gray-800 text-white font-semibold mt-12 h-14 text-lg rounded-xl transition-all shadow-md hover:shadow-lg px-16"
+                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold mt-10 h-16 text-lg rounded-xl transition-all shadow-md hover:shadow-xl px-16"
                   onClick={handlePayment}
                 >
                   {paymentMethod === 'razorpay' ? `Pay Now ₹${total.toFixed(2)}` : 'Place Order'}
@@ -410,89 +414,89 @@ export function CheckoutPage() {
           </div>
 
           <div>
-            <Card className="rounded-3xl shadow-lg border-gray-200 sticky top-6">
-              <CardContent className="p-16">
-                <h2 className="text-gray-500 font-semibold text-base mb-12 uppercase tracking-wide">
+            <Card className="rounded-2xl shadow-xl border border-gray-200 sticky top-6 hover:shadow-2xl transition-shadow">
+              <CardContent className="p-10">
+                <h2 className="text-gray-600 font-semibold text-lg mb-8 uppercase tracking-wide">
                   Order Summary
                 </h2>
-                
+
                 <div className="space-y-8">
-                  <div className="max-h-72 overflow-y-auto space-y-4 pr-2">
+                  <div className="max-h-80 overflow-y-auto space-y-5 pr-2">
                     {cart.map((item, index) => (
-                      <div key={`${item.id}-${item.size}-${index}`} className="flex gap-4 pb-4 border-b border-gray-100 last:border-0">
+                      <div key={`${item.id}-${item.size}-${index}`} className="flex gap-5 pb-5 border-b border-gray-200 last:border-0">
                         <ImageWithFallback
                           src={item.image}
                           alt={item.name}
-                          className="w-20 h-20 object-cover rounded-lg"
+                          className="w-24 h-24 object-cover rounded-lg"
                         />
                         <div className="flex-1">
-                          <p className="text-base font-semibold">{item.name}</p>
+                          <p className="text-base font-semibold text-gray-800">{item.name}</p>
                           {item.size && (
-                            <p className="text-sm text-gray-500 mt-1">Weight: {item.size}</p>
+                            <p className="text-sm text-gray-500 mt-2">Weight: {item.size}</p>
                           )}
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 mt-2">
                             ${item.price.toFixed(2)} × {item.quantity}
                           </p>
                         </div>
-                        <p className="text-base font-semibold">
+                        <p className="text-base font-semibold text-gray-800">
                           ${(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     ))}
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200">
+                  <div className="pt-6 border-t-2 border-gray-200">
                     <div className="flex gap-4">
                       <Input
                         placeholder="Enter coupon code"
                         value={coupon}
                         onChange={(e) => setCoupon(e.target.value)}
                         disabled={couponApplied}
-                        className="h-12 text-base flex-1"
+                        className="h-14 text-base flex-1 rounded-lg"
                       />
-                      <Button 
+                      <Button
                         onClick={applyCoupon}
                         disabled={couponApplied}
-                        className="h-12 px-6 bg-black hover:bg-gray-800 text-white font-medium whitespace-nowrap"
+                        className="h-14 px-8 bg-black hover:bg-gray-800 text-white font-medium whitespace-nowrap rounded-lg"
                       >
                         Apply
                       </Button>
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-gray-200 space-y-4">
-                    <div className="flex justify-between text-base">
-                      <span className="text-gray-600 font-medium">Subtotal</span>
-                      <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                  <div className="pt-6 border-t-2 border-gray-200 space-y-5">
+                    <div className="flex justify-between text-lg">
+                      <span className="text-gray-600 font-semibold">Subtotal</span>
+                      <span className="font-bold text-gray-800">${subtotal.toFixed(2)}</span>
                     </div>
                     {couponApplied && (
-                      <div className="flex justify-between text-base text-green-600">
-                        <span className="font-medium">Discount (10%)</span>
-                        <span className="font-semibold">-${discount.toFixed(2)}</span>
+                      <div className="flex justify-between text-lg text-green-600">
+                        <span className="font-semibold">Discount (10%)</span>
+                        <span className="font-bold">-${discount.toFixed(2)}</span>
                       </div>
                     )}
-                    <div className="flex justify-between text-base">
-                      <span className="text-gray-600 font-medium">Shipping</span>
-                      <span className="font-semibold">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                    <div className="flex justify-between text-lg">
+                      <span className="text-gray-600 font-semibold">Shipping</span>
+                      <span className="font-bold text-gray-800">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between text-xl font-bold border-t pt-6 mt-6">
-                      <span>Total</span>
+                    <div className="flex justify-between text-2xl font-bold border-t-2 pt-6 mt-6">
+                      <span className="text-gray-800">Total</span>
                       <span className="text-blue-600">${total.toFixed(2)}</span>
                     </div>
                   </div>
 
-                  <div className="pt-8 border-t border-gray-200 space-y-5 text-sm">
-                    <div className="flex items-center gap-3">
-                      <Truck className="w-6 h-6 text-blue-600" />
-                      <span className="text-gray-600">Free shipping on orders over $25</span>
+                  <div className="pt-8 border-t-2 border-gray-200 space-y-6 text-base">
+                    <div className="flex items-center gap-4">
+                      <Truck className="w-7 h-7 text-blue-600 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium">Free shipping on orders over $25</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Shield className="w-6 h-6 text-blue-600" />
-                      <span className="text-gray-600">100% secure payment</span>
+                    <div className="flex items-center gap-4">
+                      <Shield className="w-7 h-7 text-blue-600 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium">100% secure payment</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <RefreshCw className="w-6 h-6 text-blue-600" />
-                      <span className="text-gray-600">Easy returns within 7 days</span>
+                    <div className="flex items-center gap-4">
+                      <RefreshCw className="w-7 h-7 text-blue-600 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium">Easy returns within 7 days</span>
                     </div>
                   </div>
                 </div>

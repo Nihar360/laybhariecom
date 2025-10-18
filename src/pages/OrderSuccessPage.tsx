@@ -39,7 +39,7 @@ interface OrderData {
 export function OrderSuccessPage() {
   const { navigateTo, pageData } = useNavigation();
   const [showModal, setShowModal] = useState(false);
-  
+
   const orderData = pageData as OrderData | null;
 
   const handleViewOrderDetails = () => {
@@ -52,13 +52,13 @@ export function OrderSuccessPage() {
     const orderDate = orderData?.orderDate ? new Date(orderData.orderDate) : new Date();
     const minDays = 3;
     const maxDays = 5;
-    
+
     const minDate = new Date(orderDate);
     minDate.setDate(minDate.getDate() + minDays);
-    
+
     const maxDate = new Date(orderDate);
     maxDate.setDate(maxDate.getDate() + maxDays);
-    
+
     const formatDate = (date: Date) => {
       return date.toLocaleDateString('en-US', { 
         month: 'short', 
@@ -66,7 +66,7 @@ export function OrderSuccessPage() {
         year: 'numeric'
       });
     };
-    
+
     return `${formatDate(minDate)} - ${formatDate(maxDate)}`;
   };
 
@@ -99,7 +99,7 @@ export function OrderSuccessPage() {
                 <p className="text-sm text-gray-600">We've received your order</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4 text-left">
               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                 <Truck className="w-5 h-5 text-blue-600" />
@@ -147,15 +147,16 @@ export function OrderSuccessPage() {
               className="fixed inset-0 bg-black/50 z-40"
               onClick={() => setShowModal(false)}
             />
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', duration: 0.5 }}
-              className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl max-h-[calc(100vh-2rem)] md:max-h-[90vh] bg-white rounded-xl shadow-2xl z-50 overflow-hidden flex flex-col"
+              className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl bg-white rounded-xl shadow-2xl z-50 flex flex-col"
+              style={{ maxHeight: '90vh' }}
             >
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-white">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-white flex-shrink-0">
                 <h2 className="text-xl font-bold text-gray-900">Order Summary</h2>
                 <button
                   onClick={() => setShowModal(false)}
@@ -165,7 +166,7 @@ export function OrderSuccessPage() {
                 </button>
               </div>
 
-              <div className="overflow-y-auto flex-1 p-6">
+              <div style={{ overflowY: 'auto', flex: 1 }} className="p-6">
                 <div className="space-y-6">
                   <div className="bg-blue-50 rounded-xl p-4 flex items-start gap-3">
                     <Calendar className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -277,7 +278,7 @@ export function OrderSuccessPage() {
                 </div>
               </div>
 
-              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
                 <div className="flex gap-3">
                   <Button
                     onClick={() => setShowModal(false)}

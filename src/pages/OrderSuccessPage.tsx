@@ -278,12 +278,24 @@ export function OrderSuccessPage() {
               </div>
 
               <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-                <Button
-                  onClick={() => setShowModal(false)}
-                  className="w-full bg-black hover:bg-gray-800"
-                >
-                  Close
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => setShowModal(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowModal(false);
+                      navigateTo('home');
+                    }}
+                    className="flex-1 bg-black hover:bg-gray-800"
+                  >
+                    Continue Shopping
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </>

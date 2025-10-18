@@ -1,0 +1,204 @@
+package com.laybhariecom.demo.service;
+
+import com.laybhariecom.demo.dto.request.AddressRequest;
+import com.laybhariecom.demo.dto.request.OrderRequest;
+import com.laybhariecom.demo.dto.response.AddressResponse;
+import com.laybhariecom.demo.dto.response.OrderItemResponse;
+import com.laybhariecom.demo.dto.response.OrderResponse;
+import com.laybhariecom.demo.exception.BadRequestException;
+import com.laybhariecom.demo.exception.ResourceNotFoundException;
+import com.laybhariecom.demo.model.*;
+import com.laybhariecom.demo.repository.CartItemRepository;
+import com.laybhariecom.demo.repository.OrderRepository;
+import com.laybhariecom.demo.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+public class OrderService {
+    
+    private final OrderRepository orderRepository;
+    private final CartItemRepository cartItemRepository;
+    private final ProductRepository productRepository;
+    
+    @Autowired
+    public OrderService(OrderRepository orderRepository, 
+                       CartItemRepository cartItemRepository, 
+                       ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.productRepository = productRepository;
+    }
+    
+    @Transactional
+    public OrderResponse createOrder(User user, OrderRequest request) {
+        List<CartItem> cartItems = cartItemRepository.findByUser(user);
+        
+        if (cartItems.isEmpty()) {
+            throw new BadRequestException("Cart is empty");
+        }
+        
+        Order order = new Order();
+        order.setOrderNumber("ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        order.setUser(user);
+        order.setPaymentMethod(request.getPaymentMethod());
+        order.setStatus(Order.OrderStatus.PENDING);
+        order.setCouponCode(request.getCouponCode());
+        order.setNotes(request.getNotes());
+        
+        Address shippingAddress = convertToAddress(request.getShippingAddress());
+        shippingAddress.setUser(user);
+        order.setShippingAddress(shippingAddress);
+        
+        BigDecimal subtotal = BigDecimal.ZERO;
+        List<OrderItem> orderItems = new ArrayList<>();
+        
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            
+            if (!product.getInStock() || product.getStockCount() < cartItem.getQuantity()) {
+                throw new BadRequestException("Product " + product.getName() + " is out of stock");
+            }
+            
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setSize(cartItem.getSize());
+            orderItem.setColor(cartItem.getColor());
+            orderItem.setPrice(product.getPrice());
+            orderItem.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+            
+            orderItems.add(orderItem);
+            subtotal = subtotal.add(orderItem.getSubtotal());
+            
+            product.setStockCount(product.getStockCount() - cartItem.getQuantity());
+            productRepository.save(product);
+        }
+        
+        order.setOrderItems(orderItems);
+        order.setSubtotal(subtotal);
+        
+        BigDecimal discount = request.getDiscount() != null ? request.getDiscount() : BigDecimal.ZERO;
+        order.setDiscount(discount);
+        
+        BigDecimal shipping = subtotal.compareTo(BigDecimal.valueOf(25)) >= 0 ? 
+                BigDecimal.ZERO : BigDecimal.valueOf(5.99);
+        order.setShipping(shipping);
+        
+        BigDecimal total = subtotal.subtract(discount).add(shipping);
+        order.setTotal(total);
+        
+        Order savedOrder = orderRepository.save(order);
+        
+        cartItemRepository.deleteByUser(user);
+        
+        return convertToResponse(savedOrder);
+    }
+    
+    @Transactional(readOnly = true)
+    public OrderResponse getOrderById(User user, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException("Unauthorized access to order");
+        }
+        
+        return convertToResponse(order);
+    }
+    
+    @Transactional(readOnly = true)
+    public OrderResponse getOrderByNumber(User user, String orderNumber) {
+        Order order = orderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException("Unauthorized access to order");
+        }
+        
+        return convertToResponse(order);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getUserOrders(User user) {
+        return orderRepository.findByUserOrderByOrderDateDesc(user).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+    
+    private OrderResponse convertToResponse(Order order) {
+        OrderResponse response = new OrderResponse();
+        response.setId(order.getId());
+        response.setOrderNumber(order.getOrderNumber());
+        response.setSubtotal(order.getSubtotal());
+        response.setDiscount(order.getDiscount());
+        response.setShipping(order.getShipping());
+        response.setTotal(order.getTotal());
+        response.setPaymentMethod(order.getPaymentMethod());
+        response.setStatus(order.getStatus());
+        response.setOrderDate(order.getOrderDate());
+        response.setDeliveredDate(order.getDeliveredDate());
+        
+        List<OrderItemResponse> itemResponses = order.getOrderItems().stream()
+                .map(this::convertToOrderItemResponse)
+                .collect(Collectors.toList());
+        response.setItems(itemResponses);
+        
+        response.setShippingAddress(convertToAddressResponse(order.getShippingAddress()));
+        
+        return response;
+    }
+    
+    private OrderItemResponse convertToOrderItemResponse(OrderItem orderItem) {
+        OrderItemResponse response = new OrderItemResponse();
+        response.setId(orderItem.getId());
+        response.setProductId(orderItem.getProduct().getId());
+        response.setProductName(orderItem.getProduct().getName());
+        response.setProductImage(orderItem.getProduct().getImage());
+        response.setQuantity(orderItem.getQuantity());
+        response.setSize(orderItem.getSize());
+        response.setColor(orderItem.getColor());
+        response.setPrice(orderItem.getPrice());
+        response.setSubtotal(orderItem.getSubtotal());
+        return response;
+    }
+    
+    private Address convertToAddress(AddressRequest request) {
+        Address address = new Address();
+        address.setFullName(request.getFullName());
+        address.setMobile(request.getMobile());
+        address.setEmail(request.getEmail());
+        address.setAddressLine1(request.getAddressLine1());
+        address.setAddressLine2(request.getAddressLine2());
+        address.setCity(request.getCity());
+        address.setState(request.getState());
+        address.setZipCode(request.getZipCode());
+        address.setCountry(request.getCountry());
+        address.setIsDefault(request.getIsDefault());
+        return address;
+    }
+    
+    private AddressResponse convertToAddressResponse(Address address) {
+        AddressResponse response = new AddressResponse();
+        response.setId(address.getId());
+        response.setFullName(address.getFullName());
+        response.setMobile(address.getMobile());
+        response.setEmail(address.getEmail());
+        response.setAddressLine1(address.getAddressLine1());
+        response.setAddressLine2(address.getAddressLine2());
+        response.setCity(address.getCity());
+        response.setState(address.getState());
+        response.setZipCode(address.getZipCode());
+        response.setCountry(address.getCountry());
+        response.setIsDefault(address.getIsDefault());
+        return response;
+    }
+}

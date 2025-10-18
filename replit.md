@@ -46,7 +46,24 @@ This is an e-commerce homepage for "SPICE HOUSE" - a premium spice retail store 
 └── postcss.config.js     # PostCSS configuration
 ```
 
-## Recent Changes (October 17, 2025)
+## Recent Changes
+
+### October 18, 2025
+- ✅ Installed framer-motion for animations
+- ✅ Implemented Order Summary Modal Feature:
+  - Modal displays complete order details on "View Order Details" button click
+  - Shows purchased items with images, quantities, and prices
+  - Displays delivery address from checkout form
+  - Cost breakdown with subtotal, discount, shipping, and total
+  - Estimated delivery date (3-5 days from order date)
+  - Smooth framer-motion animations with slide-up and fade effects
+  - Data guard: button only visible when order data is available (prevents errors on page refresh)
+  - Graceful fallback messaging when accessed without checkout data
+  - Responsive design with mobile and desktop support
+- ✅ Enhanced data flow: CheckoutPage now passes complete order data (items, address, pricing) to OrderSuccessPage via NavigationContext
+- ✅ Improved UX with proper loading states and conditional rendering
+
+### October 17, 2025
 - ✅ Configured Vite dev server for Replit environment (port 5000, host 0.0.0.0)
 - ✅ Added allowedHosts configuration for Replit proxy domains (.repl.co, .replit.dev)
 - ✅ Created TypeScript configuration (tsconfig.json)
@@ -108,6 +125,7 @@ Deployment is configured for Replit autoscale:
 - 💳 Complete checkout flow with delivery form and payment
 - 💰 Dummy Razorpay payment gateway integration
 - ✅ Order success page with confirmation
+- 📋 **NEW:** Order Summary modal with complete order details, animations, and estimated delivery
 - 📱 Responsive design for all screen sizes
 - 🎨 Modern UI with Tailwind CSS
 - ♿ Accessible components using Radix UI
@@ -129,6 +147,7 @@ Key packages:
 - TypeScript
 - Tailwind CSS with @tailwindcss/postcss
 - Radix UI components
+- framer-motion (animations)
 - lucide-react (icons)
 - sonner (toast notifications)
 - next-themes (theme support)

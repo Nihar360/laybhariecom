@@ -50,8 +50,24 @@ Full-stack e-commerce application for "SPICE HOUSE" - a premium Malvani spice re
   - Removed hardcoded product data (`src/data/products.ts`)
   - All components now use real data from backend
 
-### Known Issues
-- **CORS Configuration**: There may be CORS issues when accessing the app via certain domains. The backend is configured to allow requests from the frontend, but environment-specific configuration may be needed. **Workaround**: Access the app via the main Replit domain.
+### October 19, 2025 - Critical Backend Fixes (Afternoon)
+- ✅ **Fixed JSON Infinite Recursion**:
+  - Added `@JsonIgnoreProperties("products")` to Product→Category relationship
+  - Prevents circular reference in API responses
+  - Maintains category data without nested products array
+  
+- ✅ **Secured CORS Configuration**:
+  - Restricted allowed origins to: localhost, 127.0.0.1, and *.replit.dev
+  - Enabled credentials for authenticated requests
+  - Integrated CORS filter into Spring Security chain
+  - Allows OPTIONS preflight requests
+  
+- ✅ **Fixed Database Authentication**:
+  - Updated application.properties with correct MySQL credentials
+  - Backend now connects to ecommerce_db successfully
+  - All API endpoints processing requests without errors
+
+**Result**: All three workflows running successfully, frontend-backend integration fully operational
 
 ### October 18, 2025
 - ✅ Installed framer-motion for animations

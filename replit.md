@@ -152,5 +152,54 @@ Key packages:
 - sonner (toast notifications)
 - next-themes (theme support)
 
+## Backend Setup (Spring Boot + MySQL)
+
+### Backend Stack
+- **Framework**: Spring Boot 3.2.0 with Java 19
+- **Database**: MariaDB 10.11.13 (MySQL-compatible)
+- **Port**: Backend runs on port 8080
+- **Authentication**: JWT-based with role-based access control (CUSTOMER, ADMIN)
+
+### Database Configuration
+- **Database Name**: ecommerce_db
+- **User**: ecommerce_user (dedicated user with limited privileges)
+- **Connection**: JDBC via MySQL Connector
+
+### Security Configuration
+**⚠️ Important for Production:**
+The current setup uses environment variables with fallback defaults for development convenience. For production deployment:
+
+1. Set these secrets via Replit Secrets UI:
+   - `MYSQL_USER`: Database username
+   - `MYSQL_PASSWORD`: Strong database password
+   
+2. The application will automatically use these secrets when available
+
+3. Current fallback values are for development only and should be changed for production
+
+### Available API Endpoints
+
+**Public Endpoints (No Authentication)**:
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/products` - Get all products
+- `GET /api/products/{id}` - Get product by ID
+- `GET /api/categories` - Get all categories
+
+**Protected Endpoints (Requires JWT Token)**:
+- `GET /api/users/me` - Get current user profile
+- `GET /api/cart` - Get cart items
+- `POST /api/cart` - Add to cart
+- `GET /api/orders` - Get user orders
+- `POST /api/orders` - Place order
+
+### Testing the Backend
+Use the included `Spice_House_API_Postman_Collection.json` to test all endpoints with Postman.
+
+### Workflows Running
+1. **MySQL Server** - Database server (internal port 3306)
+2. **Spring Boot Backend** - API server (port 8080)
+3. **Vite Dev Server** - Frontend (port 5000)
+
 ## User Preferences
 None set yet.

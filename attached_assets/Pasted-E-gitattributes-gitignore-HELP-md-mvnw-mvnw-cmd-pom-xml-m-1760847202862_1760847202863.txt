@@ -1,0 +1,191 @@
+E:.
+│   .gitattributes
+│   .gitignore
+│   HELP.md
+│   mvnw
+│   mvnw.cmd
+│   pom.xml
+│
+├───.mvn
+│   └───wrapper
+│           maven-wrapper.properties
+│
+├───src
+│   ├───main
+│   │   ├───java
+│   │   │   └───com
+│   │   │       └───laybhariecom
+│   │   │           └───demo
+│   │   │               │   DemoApplication.java
+│   │   │               │
+│   │   │               ├───config
+│   │   │               ├───controller
+│   │   │               │       AuthController.java
+│   │   │               │       CartController.java
+│   │   │               │       CategoryController.java
+│   │   │               │       OrderController.java
+│   │   │               │       ProductController.java
+│   │   │               │       UserController.java
+│   │   │               │
+│   │   │               ├───dto
+│   │   │               │   ├───request
+│   │   │               │   │       AddressRequest.java
+│   │   │               │   │       CartItemRequest.java
+│   │   │               │   │       LoginRequest.java
+│   │   │               │   │       OrderRequest.java
+│   │   │               │   │       RegisterRequest.java
+│   │   │               │   │
+│   │   │               │   └───response
+│   │   │               │           AddressResponse.java
+│   │   │               │           ApiResponse.java
+│   │   │               │           AuthResponse.java
+│   │   │               │           CartItemResponse.java
+│   │   │               │           OrderItemResponse.java
+│   │   │               │           OrderResponse.java
+│   │   │               │           ProductResponse.java
+│   │   │               │
+│   │   │               ├───exception
+│   │   │               │       BadRequestException.java
+│   │   │               │       GlobalExceptionHandler.java
+│   │   │               │       ResourceNotFoundException.java
+│   │   │               │
+│   │   │               ├───model
+│   │   │               │       Address.java
+│   │   │               │       CartItem.java
+│   │   │               │       Category.java
+│   │   │               │       Order.java
+│   │   │               │       OrderItem.java
+│   │   │               │       Product.java
+│   │   │               │       Role.java
+│   │   │               │       User.java
+│   │   │               │
+│   │   │               ├───repository
+│   │   │               │       AddressRepository.java
+│   │   │               │       CartItemRepository.java
+│   │   │               │       CategoryRepository.java
+│   │   │               │       OrderRepository.java
+│   │   │               │       ProductRepository.java
+│   │   │               │       UserRepository.java
+│   │   │               │
+│   │   │               ├───security
+│   │   │               │       ApplicationConfig.java
+│   │   │               │       CorsConfig.java
+│   │   │               │       JwtAuthenticationFilter.java
+│   │   │               │       SecurityConfig.java
+│   │   │               │
+│   │   │               └───service
+│   │   │                       CartService.java
+│   │   │                       CategoryService.java
+│   │   │                       JwtService.java
+│   │   │                       OrderService.java
+│   │   │                       ProductService.java
+│   │   │                       UserService.java
+│   │   │
+│   │   └───resources
+│   │       │   application.properties
+│   │       │
+│   │       ├───static
+│   │       └───templates
+│   └───test
+│       └───java
+│           └───com
+│               └───laybhariecom
+│                   └───demo
+│                           DemoApplicationTests.java
+│
+└───target
+    ├───classes
+    │   │   application.properties
+    │   │
+    │   └───com
+    │       └───laybhariecom
+    │           └───demo
+    │               │   DemoApplication.class
+    │               │
+    │               ├───config
+    │               ├───controller
+    │               │       AuthController.class
+    │               │       CartController.class
+    │               │       CategoryController.class
+    │               │       OrderController.class
+    │               │       ProductController.class
+    │               │       UserController.class
+    │               │
+    │               ├───dto
+    │               │   ├───request
+    │               │   │       AddressRequest.class
+    │               │   │       CartItemRequest.class
+    │               │   │       LoginRequest.class
+    │               │   │       OrderRequest.class
+    │               │   │       RegisterRequest.class
+    │               │   │
+    │               │   └───response
+    │               │           AddressResponse.class
+    │               │           ApiResponse.class
+    │               │           AuthResponse.class
+    │               │           CartItemResponse.class
+    │               │           OrderItemResponse.class
+    │               │           OrderResponse.class
+    │               │           ProductResponse.class
+    │               │
+    │               ├───exception
+    │               │       BadRequestException.class
+    │               │       GlobalExceptionHandler.class
+    │               │       ResourceNotFoundException.class
+    │               │
+    │               ├───model
+    │               │       Address.class
+    │               │       CartItem.class
+    │               │       Category.class
+    │               │       Order$OrderStatus.class
+    │               │       Order$PaymentMethod.class
+    │               │       Order.class
+    │               │       OrderItem.class
+    │               │       Product.class
+    │               │       Role.class
+    │               │       User$Role.class
+    │               │       User.class
+    │               │
+    │               ├───repository
+    │               │       AddressRepository.class
+    │               │       CartItemRepository.class
+    │               │       CategoryRepository.class
+    │               │       OrderRepository.class
+    │               │       ProductRepository.class
+    │               │       UserRepository.class
+    │               │
+    │               ├───security
+    │               │       ApplicationConfig.class
+    │               │       CorsConfig.class
+    │               │       JwtAuthenticationFilter.class
+    │               │       SecurityConfig.class
+    │               │
+    │               └───service
+    │                       CartService.class
+    │                       CategoryService.class
+    │                       JwtService.class
+    │                       OrderService.class
+    │                       ProductService.class
+    │                       UserService.class
+    │
+    ├───generated-sources
+    │   └───annotations
+    ├───generated-test-sources
+    │   └───test-annotations
+    ├───maven-status
+    │   └───maven-compiler-plugin
+    │       ├───compile
+    │       │   └───default-compile
+    │       │           createdFiles.lst
+    │       │           inputFiles.lst
+    │       │
+    │       └───testCompile
+    │           └───default-testCompile
+    │                   createdFiles.lst
+    │                   inputFiles.lst
+    │
+    └───test-classes
+        └───com
+            └───laybhariecom
+                └───demo
+                        DemoApplicationTests.class

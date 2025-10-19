@@ -1,5 +1,5 @@
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
-import { useNavigation } from '../contexts/NavigationContext';
 import {
   Sheet,
   SheetContent,
@@ -16,12 +16,12 @@ import { useState } from 'react';
 
 export function CartDrawer() {
   const { cart, removeFromCart, updateQuantity, getTotalItems, getTotalPrice } = useCart();
-  const { navigateTo } = useNavigation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleCheckout = () => {
     setOpen(false);
-    navigateTo('checkout');
+    navigate('/checkout');
   };
 
   return (
@@ -54,7 +54,7 @@ export function CartDrawer() {
                   className="mt-4"
                   onClick={() => {
                     setOpen(false);
-                    navigateTo('home');
+                    navigate('/');
                   }}
                 >
                   Continue Shopping

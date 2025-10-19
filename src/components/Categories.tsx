@@ -1,9 +1,8 @@
+import { Link } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { useNavigation } from '../contexts/NavigationContext';
 import { categories } from '../data/products';
 
 export function Categories() {
-  const { navigateTo } = useNavigation();
 
   return (
     <section className="py-16 bg-white">
@@ -14,10 +13,10 @@ export function Categories() {
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
-            <div
+            <Link
               key={category.name}
-              className="group relative overflow-hidden rounded-lg cursor-pointer"
-              onClick={() => navigateTo('category', { category: category.name })}
+              to={`/category/${category.name}`}
+              className="group relative overflow-hidden rounded-lg cursor-pointer block"
             >
               <ImageWithFallback
                 src={category.image}
@@ -28,7 +27,7 @@ export function Categories() {
                 <h3 className="text-white text-xl mb-1">{category.name}</h3>
                 <p className="text-gray-200 text-sm">{category.count}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

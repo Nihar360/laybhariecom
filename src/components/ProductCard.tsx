@@ -1,11 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { Badge } from './ui/badge';
-import { useNavigation } from '../contexts/NavigationContext';
 import { useCart } from '../contexts/CartContext';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   id: number;
@@ -28,7 +28,7 @@ export function ProductCard({
   reviews,
   badge 
 }: ProductCardProps) {
-  const { navigateTo } = useNavigation();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
 
@@ -41,7 +41,7 @@ export function ProductCard({
   return (
     <Card 
       className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-shadow cursor-pointer"
-      onClick={() => navigateTo('product', { productId: id })}
+      onClick={() => navigate(`/product/${id}`)}
     >
       <div className="relative overflow-hidden">
         <ImageWithFallback

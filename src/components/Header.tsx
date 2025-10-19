@@ -1,10 +1,18 @@
-import { Search, User, Menu, Heart } from 'lucide-react';
+import { Search, User, Menu, Heart, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from './ui/input';
 import { CartDrawer } from './CartDrawer';
-import { useNavigation } from '../contexts/NavigationContext';
+import { useAuth } from '../contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 export function Header() {
-  const { navigateTo } = useNavigation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <header className="border-b sticky top-0 bg-white z-50">
@@ -24,9 +32,9 @@ export function Header() {
             <Menu className="w-6 h-6" />
           </button>
 
-          <button onClick={() => navigateTo('home')}>
+          <Link to="/">
             <h1 className="text-2xl cursor-pointer">SPICE HOUSE</h1>
-          </button>
+          </Link>
 
           {/* Search bar - hidden on mobile */}
           <div className="hidden md:flex items-center flex-1 max-w-xl mx-8">
@@ -45,20 +53,38 @@ export function Header() {
             <button className="hidden sm:block hover:text-gray-600">
               <Heart className="w-6 h-6" />
             </button>
-            <button className="hover:text-gray-600">
-              <User className="w-6 h-6" />
-            </button>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="hover:text-gray-600 flex items-center gap-2">
+                    <User className="w-6 h-6" />
+                    <span className="hidden md:inline text-sm">{user?.fullName}</span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/orders')}>
+                    My Orders
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button onClick={() => navigate('/login')} className="hover:text-gray-600">
+                <User className="w-6 h-6" />
+              </button>
+            )}
             <CartDrawer />
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="hidden lg:flex items-center justify-center gap-8 py-4 border-t">
-          <button onClick={() => navigateTo('home')} className="hover:text-gray-600">New Arrivals</button>
-          <button onClick={() => navigateTo('category', { category: 'Masala Blends' })} className="hover:text-gray-600">Masala Blends</button>
-          <button onClick={() => navigateTo('category', { category: 'Single Spices' })} className="hover:text-gray-600">Single Spices</button>
-          <button onClick={() => navigateTo('category', { category: 'Whole Spices' })} className="hover:text-gray-600">Whole Spices</button>
-          <button onClick={() => navigateTo('category', { category: 'Herbs & Aromatics' })} className="hover:text-gray-600">Herbs & Aromatics</button>
+          <Link to="/" className="hover:text-gray-600">New Arrivals</Link>
+          <Link to="/category/Masalas" className="hover:text-gray-600">Masalas</Link>
+          <Link to="/category/Mixes" className="hover:text-gray-600">Mixes</Link>
           <button className="text-red-600">Sale</button>
         </nav>
       </div>

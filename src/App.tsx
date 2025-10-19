@@ -1,59 +1,37 @@
-import { CartProvider } from "./contexts/CartContext";
-import {
-  NavigationProvider,
-  useNavigation,
-} from "./contexts/NavigationContext";
-import { Header } from "./components/Header";
-import { Hero } from "./components/Hero";
-import { Categories } from "./components/Categories";
-import { FeaturedProducts } from "./components/FeaturedProducts";
-import { Newsletter } from "./components/Newsletter";
-import { Footer } from "./components/Footer";
-import { CategoryPage } from "./pages/CategoryPage";
-import { ProductDetailsPage } from "./pages/ProductDetailsPage";
-import { CheckoutPage } from "./pages/CheckoutPage";
-import { OrderSuccessPage } from "./pages/OrderSuccessPage";
-import { Toaster } from "./components/ui/sonner";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { CartProvider } from './contexts/CartContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { Header } from './components/Header';
+import { Hero } from './components/Hero';
+import { Categories } from './components/Categories';
+import { FeaturedProducts } from './components/FeaturedProducts';
+import { Newsletter } from './components/Newsletter';
+import { Footer } from './components/Footer';
+import { CategoryPage } from './pages/CategoryPage';
+import { ProductDetailsPage } from './pages/ProductDetailsPage';
+import { CheckoutPage } from './pages/CheckoutPage';
+import { OrderSuccessPage } from './pages/OrderSuccessPage';
+import { LoginForm } from './components/auth/LoginForm';
+import { RegisterForm } from './components/auth/RegisterForm';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { Toaster } from './components/ui/sonner';
 
-function AppContent() {
-  const { currentPage } = useNavigation();
+function HomePage() {
+  return (
+    <>
+      <Hero />
+      <Categories />
+      <FeaturedProducts />
+      <Newsletter />
+    </>
+  );
+}
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case "home":
-        return (
-          <>
-            <Hero />
-            <Categories />
-            <FeaturedProducts />
-            <Newsletter />
-          </>
-        );
-      case "category":
-        return <CategoryPage />;
-      case "product":
-        return <ProductDetailsPage />;
-      case "checkout":
-        return <CheckoutPage />;
-      case "order-success":
-        return <OrderSuccessPage />;
-      default:
-        return (
-          <>
-            <Hero />
-            <Categories />
-            <FeaturedProducts />
-            <Newsletter />
-          </>
-        );
-    }
-  };
-
+function Layout({ children, hideHeader = false }: { children: React.ReactNode; hideHeader?: boolean }) {
   return (
     <div className="min-h-screen">
-      {currentPage !== "checkout" && currentPage !== "order-success" && <Header />}
-      <main>{renderPage()}</main>
-      {currentPage === "home" && <Footer />}
+      {!hideHeader && <Header />}
+      <main>{children}</main>
       <Toaster />
     </div>
   );
@@ -61,10 +39,67 @@ function AppContent() {
 
 export default function App() {
   return (
-    <CartProvider>
-      <NavigationProvider>
-        <AppContent />
-      </NavigationProvider>
-    </CartProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <Routes>
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<RegisterForm />} />
+            
+            <Route
+              path="/"
+              element={
+                <Layout>
+                  <HomePage />
+                  <Footer />
+                </Layout>
+              }
+            />
+            
+            <Route
+              path="/category/:categoryName"
+              element={
+                <Layout>
+                  <CategoryPage />
+                </Layout>
+              }
+            />
+            
+            <Route
+              path="/product/:id"
+              element={
+                <Layout>
+                  <ProductDetailsPage />
+                </Layout>
+              }
+            />
+            
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Layout hideHeader>
+                    <CheckoutPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/order-success/:orderNumber"
+              element={
+                <ProtectedRoute>
+                  <Layout hideHeader>
+                    <OrderSuccessPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

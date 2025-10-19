@@ -62,8 +62,8 @@ export function CartDrawer() {
               </div>
             ) : (
               <div className="space-y-4">
-                {cart.map((item, index) => (
-                  <div key={`${item.id}-${item.size}-${item.color}-${index}`} className="flex gap-4 border-b pb-4">
+                {cart.map((item) => (
+                  <div key={item.id} className="flex gap-4 border-b pb-4">
                     <ImageWithFallback
                       src={item.image}
                       alt={item.name}
@@ -77,21 +77,17 @@ export function CartDrawer() {
                       {item.color && (
                         <p className="text-xs text-gray-500">Color: {item.color}</p>
                       )}
-                      <p className="text-sm mt-1">${item.price.toFixed(2)}</p>
+                      <p className="text-sm mt-1">₹{item.price.toFixed(2)}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <button
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1, item.size, item.color)
-                          }
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           className="p-1 hover:bg-gray-100 rounded"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="text-sm w-8 text-center">{item.quantity}</span>
                         <button
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1, item.size, item.color)
-                          }
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           className="p-1 hover:bg-gray-100 rounded"
                         >
                           <Plus className="w-4 h-4" />
@@ -99,7 +95,7 @@ export function CartDrawer() {
                       </div>
                     </div>
                     <button
-                      onClick={() => removeFromCart(item.id, item.size, item.color)}
+                      onClick={() => removeFromCart(item.id)}
                       className="text-gray-400 hover:text-black"
                     >
                       <X className="w-5 h-5" />
@@ -115,7 +111,7 @@ export function CartDrawer() {
               <div className="w-full space-y-4">
                 <div className="flex justify-between text-lg">
                   <span>Total:</span>
-                  <span>${getTotalPrice().toFixed(2)}</span>
+                  <span>₹{getTotalPrice().toFixed(2)}</span>
                 </div>
                 <Button className="w-full" size="lg" onClick={handleCheckout}>
                   Checkout

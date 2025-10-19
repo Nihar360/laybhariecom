@@ -32,10 +32,14 @@ export function ProductCard({
   const { addToCart } = useCart();
   const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    addToCart({ id, name, price, image });
-    toast.success('Added to cart!');
+    try {
+      await addToCart({ productId: id, quantity: 1 });
+      toast.success('Added to cart!');
+    } catch (error) {
+      // Error already handled in CartContext
+    }
   };
 
   return (

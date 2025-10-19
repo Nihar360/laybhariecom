@@ -34,6 +34,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: response.data.email,
         role: response.data.role,
       });
+      // Dispatch custom event for cart refresh
+      window.dispatchEvent(new Event('auth-changed'));
     } else {
       throw new Error(response.message);
     }
@@ -48,6 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: response.data.email,
         role: response.data.role,
       });
+      // Dispatch custom event for cart refresh
+      window.dispatchEvent(new Event('auth-changed'));
     } else {
       throw new Error(response.message);
     }
@@ -56,6 +60,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     authService.logout();
     setUser(null);
+    // Dispatch custom event for cart clear
+    window.dispatchEvent(new Event('auth-changed'));
   };
 
   return (

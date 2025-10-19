@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigation } from "../contexts/NavigationContext";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import { ordersService } from "@/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -12,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { Card, CardContent } from "../components/ui/card";
+import { CardContent } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { ChevronLeft, Truck, Shield, RefreshCw, Gift } from "lucide-react";
 import { toast } from "sonner";
@@ -127,7 +128,7 @@ const countryStateData: Record<string, Record<string, string[]>> = {
 };
 
 export function CheckoutPage() {
-  const { goBack, navigateTo } = useNavigation();
+  const navigate = useNavigate();
   const { cart, getTotalPrice, clearCart } = useCart();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">(
@@ -200,49 +201,45 @@ export function CheckoutPage() {
     return true;
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!validateForm()) return;
 
-    const orderData = {
-      items: cart,
-      address: formData,
-      pricing: {
-        subtotal,
-        discount,
-        shipping,
-        total,
-      },
-      paymentMethod,
-      orderDate: new Date().toISOString(),
-    };
-
     if (paymentMethod === "razorpay") {
+      // Show Razorpay modal for online payment
       setShowPaymentModal(true);
     } else {
-      clearCart();
-      toast.success("Order placed successfully via COD!");
-      navigateTo("order-success", orderData);
+      // Create order directly for COD
+      await createOrder();
     }
   };
 
-  const handlePaymentSuccess = () => {
-    const orderData = {
-      items: cart,
-      address: formData,
-      pricing: {
-        subtotal,
-        discount,
-        shipping,
-        total,
-      },
-      paymentMethod,
-      orderDate: new Date().toISOString(),
-    };
+  const createOrder = async () => {
+    try {
+      const orderRequest = {
+        shippingAddress: formData,
+        paymentMethod: paymentMethod === "razorpay" ? "ONLINE" : "COD",
+        notes: "",
+      };
 
+      const response = await ordersService.createOrder(orderRequest);
+      
+      if (response.success && response.data) {
+        await clearCart();
+        toast.success("Order placed successfully!");
+        navigate(`/order-success/${response.data.orderNumber}`);
+      } else {
+        toast.error(response.message || "Failed to create order");
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error("Failed to create order. Please try again.");
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    // Called after successful Razorpay payment
     setShowPaymentModal(false);
-    clearCart();
-    toast.success("Payment Successful!");
-    navigateTo("order-success", orderData);
+    await createOrder();
   };
 
   const applyCoupon = () => {
@@ -278,7 +275,7 @@ export function CheckoutPage() {
           <Gift className="w-16 h-16 text-slate-300 mx-auto mb-6" />
           <p className="text-slate-500 mb-6 text-lg">Your cart is empty</p>
           <Button
-            onClick={() => navigateTo("home")}
+            onClick={() => navigate("/")}
             className="bg-black hover:bg-slate-900 px-8 py-6 text-base rounded-full"
           >
             Start Shopping
@@ -293,7 +290,7 @@ export function CheckoutPage() {
       <div className="bg-white/80 backdrop-blur-sm border-b border-slate-100/50">
         <div className="container mx-auto px-6 py-4">
           <button
-            onClick={goBack}
+            onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors duration-200"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -423,7 +420,7 @@ export function CheckoutPage() {
                     </Label>
                     <Select
                       value={formData.country}
-                      onValueChange={(value) =>
+                      onValueChange={(value: string) =>
                         handleInputChange("country", value)
                       }
                     >
@@ -449,7 +446,7 @@ export function CheckoutPage() {
                       </Label>
                       <Select
                         value={formData.state}
-                        onValueChange={(value) =>
+                        onValueChange={(value: string) =>
                           handleInputChange("state", value)
                         }
                         disabled={!formData.country}
@@ -481,7 +478,7 @@ export function CheckoutPage() {
                       </Label>
                       <Select
                         value={formData.city}
-                        onValueChange={(value) =>
+                        onValueChange={(value: string) =>
                           handleInputChange("city", value)
                         }
                         disabled={!formData.state}

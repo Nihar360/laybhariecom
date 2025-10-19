@@ -1,0 +1,99 @@
+You are a senior full-stack architect helping me transition my e-commerce web app from demo data to a production-ready structure.
+
+The project has:
+
+✅ Frontend (React or similar — already built)
+
+✅ Backend (Spring Boot or Node.js — already built)
+
+✅ Database (MySQL or MongoDB — already connected)
+
+1️⃣ Objective
+
+I’ve been using demo data until now. I want to remove all demo/test data and insert real data directly into the database (through SQL/Seeder/Script).
+
+The real-world data is as follows:
+
+Categories:
+
+Masalas
+
+Mixes
+
+Masala Products (3):
+
+Malvani Masala
+
+Malvani Garam Masala
+
+Malvani Fish Masala
+
+Mixes Products (4):
+
+Kuldachi Pithi
+
+Tandlache Pith
+
+Tandlahi Bhakri Pith
+
+Ghavne Pith
+
+Use no demo images — just text data. All products should be hardcoded or seeded directly into the database initially.
+
+2️⃣ Architecture Documentation Needed
+
+Show me a clear architecture diagram or explanation of how the frontend, backend, and database interact.
+
+Explain how this structure can be cloud-native and future-ready for hosting on a real domain (e.g., using AWS, Render, or Vercel).
+
+Include folder structure (for both frontend & backend).
+
+3️⃣ Workflow Plan
+
+Explain clearly:
+
+Step 1 → Setting up clean database (removing demo data).
+
+Step 2 → Seeding new real data.
+
+Step 3 → Integrating seeded data with frontend (API endpoints).
+
+Step 4 → Testing all main functionalities end-to-end.
+
+4️⃣ Functionalities Checklist
+
+By looking at current code (you will analyze it), list which core e-commerce functionalities are:
+
+✅ Already implemented and working
+
+⚙️ Partially done
+
+❌ Missing (need to be added)
+
+This includes:
+
+User login/signup
+
+Product listing (categories, filters, etc.)
+
+Cart & checkout
+
+Order history
+
+Admin panel
+
+User profile
+
+Payments (if integrated or pending)
+
+5️⃣ Deliverables
+
+Database script with the 2 categories & 7 products
+
+API testing plan (Postman collection or endpoints list)
+
+Cloud-ready configuration advice (CORS, environment variables, build setup, etc.)
+
+Pending functionality report
+
+Steps to deploy on a real domain later

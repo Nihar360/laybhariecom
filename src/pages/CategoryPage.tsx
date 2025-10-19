@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '../contexts/NavigationContext';
 import { ProductCard } from '../components/ProductCard';
-import { allProducts } from '../data/products';
-import { ChevronLeft } from 'lucide-react';
+import { productsService } from '@/api';
+import type { Product } from '@/types/api';
+import { ChevronLeft, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { toast } from 'sonner';
 import {
   Select,
   SelectContent,
@@ -17,12 +19,34 @@ export function CategoryPage() {
   const categoryName = pageData?.category || 'All Products';
   
   const [sortBy, setSortBy] = useState('featured');
-  
-  const filteredProducts = categoryName === 'All Products' 
-    ? allProducts 
-    : allProducts.filter((p) => p.category === categoryName);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = categoryName === 'All Products'
+          ? await productsService.getAllProducts()
+          : await productsService.getProductsByCategory(categoryName);
+        
+        if (response.success && response.data) {
+          setProducts(response.data);
+        } else {
+          toast.error(response.message || 'Failed to load products');
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [categoryName]);
+
+  const sortedProducts = [...products].sort((a, b) => {
     switch (sortBy) {
       case 'price-low':
         return a.price - b.price;
@@ -76,7 +100,11 @@ export function CategoryPage() {
 
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-8">
-        {sortedProducts.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+          </div>
+        ) : sortedProducts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">No products found in this category.</p>
             <Button onClick={goBack}>Go Back</Button>
@@ -85,7 +113,15 @@ export function CategoryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sortedProducts.map((product) => (
               <div key={product.id} onClick={() => handleProductClick(product.id)}>
-                <ProductCard {...product} />
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  originalPrice={product.originalPrice}
+                  image={product.images[0] || ''}
+                  rating={product.rating}
+                  reviews={product.reviews}
+                />
               </div>
             ))}
           </div>

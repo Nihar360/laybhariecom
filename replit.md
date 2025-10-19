@@ -1,205 +1,235 @@
-# E-commerce Home Page
+# Spice House E-commerce Application
 
 ## Overview
-This is an e-commerce homepage for "SPICE HOUSE" - a premium spice retail store featuring authentic flavors from India. The application showcases a modern, responsive design with product categories, featured products, and a shopping cart system.
+Full-stack e-commerce application for "SPICE HOUSE" - a premium Malvani spice retail store featuring authentic flavors from Maharashtra, India. The application includes user authentication, product browsing, shopping cart management, and order placement with Razorpay and COD payment options.
 
 **Tech Stack:**
-- React 18.3.1 with TypeScript
-- Vite 6.3.5 (build tool & dev server)
-- Tailwind CSS with shadcn/ui components
-- Radix UI primitives for accessible UI components
+- **Frontend**: React 18.3.1 with TypeScript, Vite 6.3.5
+- **Backend**: Spring Boot 3.2.0 with Java 19
+- **Database**: MariaDB 10.11.13 (MySQL-compatible)
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Authentication**: JWT-based authentication with role-based access control
 
-**Current State:** ✅ Fully configured and running in Replit environment
+**Current State:** ✅ Backend and frontend integrated with live API endpoints
+
+## Recent Changes
+
+### October 19, 2025 - Backend Integration Complete
+- ✅ **Migrated from hardcoded data to live backend API**:
+  - Products now fetched from `/api/products` endpoint
+  - Categories now fetched from `/api/categories` endpoint
+  - Cart operations use backend API (`/api/cart`)
+  - Order placement via `/api/orders` endpoint
+  
+- ✅ **Frontend API Service Layer**:
+  - Created centralized API configuration (`src/api/config.ts`)
+  - Implemented services: auth, products, cart, orders
+  - Automatic JWT token injection for protected endpoints
+  - Auto-redirect to login on 401 Unauthorized
+
+- ✅ **Component Updates**:
+  - `FeaturedProducts.tsx` - Fetches products from backend API
+  - `Categories.tsx` - Fetches categories from backend API
+  - `CategoryPage.tsx` - Filters products using backend endpoint
+  - `ProductDetailsPage.tsx` - Loads individual products from API
+  - `CartContext.tsx` - Complete refactor to use backend cart API
+  - `CheckoutPage.tsx` - Creates orders via backend and clears cart
+  
+- ✅ **Cart & Auth Synchronization**:
+  - Implemented custom 'auth-changed' event for same-tab cart refresh
+  - Storage event listener for cross-tab cart synchronization
+  - Cart automatically syncs on login/logout across all tabs
+  
+- ✅ **Payment Flow Improvements**:
+  - Separated order creation from payment confirmation
+  - Razorpay modal opens correctly without duplicate orders
+  - COD orders bypass payment modal
+  - Order navigation uses backend-generated order numbers
+
+- ✅ **Data Cleanup**:
+  - Removed hardcoded product data (`src/data/products.ts`)
+  - All components now use real data from backend
+
+### Known Issues
+- **CORS Configuration**: There may be CORS issues when accessing the app via certain domains. The backend is configured to allow requests from the frontend, but environment-specific configuration may be needed. **Workaround**: Access the app via the main Replit domain.
+
+### October 18, 2025
+- ✅ Installed framer-motion for animations
+- ✅ Implemented Order Summary Modal
+- ✅ Enhanced data flow for order details
+
+### October 17, 2025
+- ✅ Initial Replit environment setup
+- ✅ Vite dev server configuration
+- ✅ Complete checkout flow implementation
+- ✅ Backend API setup with Spring Boot
 
 ## Project Structure
 ```
 /
 ├── src/
-│   ├── components/        # React components
-│   │   ├── ui/           # Reusable UI components (shadcn/ui)
-│   │   ├── figma/        # Figma-specific components
-│   │   ├── Header.tsx    # Main navigation header
-│   │   ├── Hero.tsx      # Hero section
-│   │   ├── Categories.tsx
-│   │   ├── FeaturedProducts.tsx
+│   ├── api/                  # API service layer
+│   │   ├── config.ts        # Axios configuration & interceptors
+│   │   ├── auth.ts          # Authentication API calls
+│   │   ├── products.ts      # Products & categories API
+│   │   ├── cart.ts          # Shopping cart API
+│   │   ├── orders.ts        # Order management API
+│   │   └── index.ts         # Service exports
+│   ├── types/               # TypeScript type definitions
+│   │   └── api.ts          # API response/request types
+│   ├── components/          # React components
+│   │   ├── ui/             # Reusable UI components (shadcn/ui)
+│   │   ├── auth/           # Authentication forms
+│   │   ├── figma/          # Image components with fallback
+│   │   ├── Header.tsx      # Main navigation
+│   │   ├── Categories.tsx  # Category grid (uses backend API)
+│   │   ├── FeaturedProducts.tsx  # Product showcase (uses backend API)
 │   │   ├── ProductCard.tsx
-│   │   ├── CartDrawer.tsx
-│   │   ├── Newsletter.tsx
-│   │   └── Footer.tsx
-│   ├── pages/            # Page components
-│   │   ├── CategoryPage.tsx
-│   │   └── ProductDetailsPage.tsx
-│   ├── contexts/         # React Context providers
-│   │   ├── CartContext.tsx
+│   │   ├── CartDrawer.tsx  # Shopping cart sidebar
+│   │   └── ...
+│   ├── pages/              # Page components
+│   │   ├── HomePage.tsx
+│   │   ├── CategoryPage.tsx     # Category filtering (uses backend API)
+│   │   ├── ProductDetailsPage.tsx  # Product details (uses backend API)
+│   │   ├── CheckoutPage.tsx     # Checkout & order creation
+│   │   └── OrderSuccessPage.tsx
+│   ├── contexts/           # React Context providers
+│   │   ├── AuthContext.tsx      # JWT authentication state
+│   │   ├── CartContext.tsx      # Cart state (synced with backend)
 │   │   └── NavigationContext.tsx
-│   ├── data/             # Static data
-│   │   └── products.ts
-│   ├── styles/           # Global styles
-│   │   └── globals.css
-│   ├── App.tsx           # Main app component
-│   ├── main.tsx          # App entry point
-│   └── index.css         # Base styles
-├── index.html
-├── vite.config.ts        # Vite configuration
-├── tsconfig.json         # TypeScript configuration
-├── tailwind.config.js    # Tailwind CSS configuration
-└── postcss.config.js     # PostCSS configuration
+│   ├── App.tsx
+│   └── main.tsx
+├── src/main/java/          # Spring Boot backend
+│   └── com/laybhariecom/demo/
+│       ├── config/         # Security, CORS, JWT config
+│       ├── controller/     # REST API controllers
+│       ├── model/          # JPA entities
+│       ├── repository/     # Data access layer
+│       └── service/        # Business logic
+└── src/main/resources/
+    └── application.properties  # Backend configuration
 ```
 
-## Recent Changes
+## Backend Configuration
 
-### October 18, 2025
-- ✅ Installed framer-motion for animations
-- ✅ Implemented Order Summary Modal Feature:
-  - Modal displays complete order details on "View Order Details" button click
-  - Shows purchased items with images, quantities, and prices
-  - Displays delivery address from checkout form
-  - Cost breakdown with subtotal, discount, shipping, and total
-  - Estimated delivery date (3-5 days from order date)
-  - Smooth framer-motion animations with slide-up and fade effects
-  - Data guard: button only visible when order data is available (prevents errors on page refresh)
-  - Graceful fallback messaging when accessed without checkout data
-  - Responsive design with mobile and desktop support
-- ✅ Enhanced data flow: CheckoutPage now passes complete order data (items, address, pricing) to OrderSuccessPage via NavigationContext
-- ✅ Improved UX with proper loading states and conditional rendering
+### Running Services
+1. **MySQL Server** (internal port 3306)
+2. **Spring Boot Backend** (port 8080)
+3. **Vite Dev Server** (port 5000)
 
-### October 17, 2025
-- ✅ Configured Vite dev server for Replit environment (port 5000, host 0.0.0.0)
-- ✅ Added allowedHosts configuration for Replit proxy domains (.repl.co, .replit.dev)
-- ✅ Created TypeScript configuration (tsconfig.json)
-- ✅ Set up Tailwind CSS with @tailwindcss/postcss
-- ✅ Installed all npm dependencies
-- ✅ Configured deployment settings for Replit (autoscale deployment)
-- ✅ Created .gitignore for Node.js project
-- ✅ Set up development workflow
-- ✅ Implemented complete checkout flow with:
-  - CheckoutPage with delivery form and order summary
-  - Dummy Razorpay payment gateway modal
-  - OrderSuccessPage with success animation
-  - Navigation from product details "Buy Now" and cart "Checkout" buttons
-- ✅ Enhanced CheckoutPage with improved UX:
-  - Scaled up card boxes with larger padding (p-8) and text (text-base)
-  - Moved card titles inside as soft hint labels
-  - Added dependent State-City dropdowns with all Indian states and major cities
-  - Implemented Payment Method selection (Razorpay/UPI/Cards or Cash on Delivery)
-  - Added Coupon/Discount box with 10% discount functionality
-  - Moved payment button below payment section with conditional text
-  - COD orders now skip payment modal and go directly to success page
-- ✅ Modern UI Enhancements:
-  - Increased spacing and padding across all sections (p-10, gap-10, h-12 inputs, h-14 buttons)
-  - Blue accent color scheme with modern hover and focus effects
-  - Enhanced card styling (rounded-3xl, shadow-lg)
-  - Better visual hierarchy with larger fonts and spacious layout
-- ✅ Dynamic Country-Based Selection:
-  - Country selector dynamically updates State and City dropdowns
-  - Support for India, USA, UK, and Canada with region-specific data
-  - Smart state/city reset when country changes
-  - Clear disabled states with helpful placeholder messages
-- ✅ Smart Payment Rules:
-  - Cash on Delivery (COD) only available for India
-  - Auto-switches to Razorpay when non-India country selected
-  - Visual feedback with disabled styling and informative messages
+### Database
+- **Name**: ecommerce_db
+- **User**: ecommerce_user
+- **Tables**: users, products, categories, cart_items, orders, order_items, addresses
+
+### API Endpoints
+
+**Public Endpoints**:
+- `POST /api/auth/register` - User registration (returns JWT)
+- `POST /api/auth/login` - User login (returns JWT)
+- `GET /api/products` - List all products
+- `GET /api/products/{id}` - Get single product
+- `GET /api/products/category/{name}` - Filter by category
+- `GET /api/categories` - List all categories
+
+**Protected Endpoints (Requires JWT)**:
+- `GET /api/cart` - Get user's cart items
+- `POST /api/cart` - Add item to cart
+- `PUT /api/cart/{id}` - Update cart item quantity
+- `DELETE /api/cart/{id}` - Remove from cart
+- `POST /api/orders` - Create order (clears cart)
+- `GET /api/orders` - Get user's order history
+- `GET /api/orders/{orderNumber}` - Get specific order
+
+### JWT Authentication
+- Tokens stored in localStorage as `auth_token`
+- Frontend automatically includes token in Authorization header
+- 401 responses trigger automatic redirect to login
+- Token expiration: 24 hours
+
+### CORS Configuration
+Backend is configured to allow requests from:
+- `http://localhost:5000` (local development)
+- `http://127.0.0.1:5000` (Replit internal)
+- Replit production domains
+
+## Frontend-Backend Integration
+
+### API Configuration (`src/api/config.ts`)
+- Dynamically detects environment (Replit vs local)
+- Uses same hostname for frontend and backend, different ports
+- Automatic JWT token injection
+- Global error handling with auto-logout on 401
+
+### State Management
+- **AuthContext**: Manages user authentication state
+  - Dispatches 'auth-changed' event on login/logout
+  - Stores user data and JWT token
+  
+- **CartContext**: Manages shopping cart
+  - Fetches cart from backend on mount
+  - Listens for auth changes (same-tab and cross-tab)
+  - Syncs with backend on all operations
+
+### Type Safety
+All API responses and requests are fully typed in `src/types/api.ts`:
+- Product, Category, CartItem, Order types
+- Request/Response wrappers
+- Full TypeScript support across the stack
 
 ## Development
 
 ### Running Locally
-The dev server is already configured and running:
 ```bash
-npm run dev
+# Frontend is auto-running via workflow
+npm run dev  # Port 5000
+
+# Backend is auto-running via workflow
+# Port 8080
 ```
-Server runs on: http://0.0.0.0:5000
+
+### Testing the Integration
+1. Open the app in browser (Replit provides URL)
+2. Register a new account or login
+3. Browse products (loaded from backend)
+4. Add items to cart (synced with backend)
+5. Complete checkout (creates order in database)
+6. View order history
 
 ### Building for Production
 ```bash
 npm run build
 ```
-Build output: `./build` directory
-
-### Deployment
-Deployment is configured for Replit autoscale:
-- Build command: `npm run build`
-- Run command: `npx vite preview --host 0.0.0.0 --port 5000`
 
 ## Features
-- 🛒 Shopping cart with add/remove functionality
-- 💳 Complete checkout flow with delivery form and payment
-- 💰 Dummy Razorpay payment gateway integration
-- ✅ Order success page with confirmation
-- 📋 **NEW:** Order Summary modal with complete order details, animations, and estimated delivery
-- 📱 Responsive design for all screen sizes
-- 🎨 Modern UI with Tailwind CSS
-- ♿ Accessible components using Radix UI
-- 🔄 Client-side navigation (no page reloads)
-- 🎯 Product categories and filtering
-- 📧 Newsletter signup
+- 🔐 JWT authentication with secure login/register
+- 🛒 Shopping cart synchronized with backend
+- 📦 Product catalog with categories
+- 💳 Complete checkout with Razorpay/COD
+- 📱 Fully responsive design
+- ♿ Accessible UI components
+- 🔄 Real-time cart sync across tabs
+- 📊 Order history and tracking
 
-## Architecture Notes
-- Uses React Context for state management (Cart and Navigation)
-- Client-side routing implemented via NavigationContext
-- Component library: shadcn/ui built on Radix UI primitives
-- Styling: Tailwind CSS with custom theme configuration
-- HMR (Hot Module Replacement) enabled for fast development
+## Architecture Decisions
 
-## Dependencies
-Key packages:
-- React & React DOM 18.3.1
-- Vite 6.3.5
-- TypeScript
-- Tailwind CSS with @tailwindcss/postcss
-- Radix UI components
-- framer-motion (animations)
-- lucide-react (icons)
-- sonner (toast notifications)
-- next-themes (theme support)
+### Why Backend API?
+- Centralized data management
+- User-specific carts and orders
+- Secure authentication
+- Production-ready architecture
 
-## Backend Setup (Spring Boot + MySQL)
+### Why JWT?
+- Stateless authentication
+- Works across multiple tabs
+- Secure token-based access
+- Standard industry practice
 
-### Backend Stack
-- **Framework**: Spring Boot 3.2.0 with Java 19
-- **Database**: MariaDB 10.11.13 (MySQL-compatible)
-- **Port**: Backend runs on port 8080
-- **Authentication**: JWT-based with role-based access control (CUSTOMER, ADMIN)
-
-### Database Configuration
-- **Database Name**: ecommerce_db
-- **User**: ecommerce_user (dedicated user with limited privileges)
-- **Connection**: JDBC via MySQL Connector
-
-### Security Configuration
-**⚠️ Important for Production:**
-The current setup uses environment variables with fallback defaults for development convenience. For production deployment:
-
-1. Set these secrets via Replit Secrets UI:
-   - `MYSQL_USER`: Database username
-   - `MYSQL_PASSWORD`: Strong database password
-   
-2. The application will automatically use these secrets when available
-
-3. Current fallback values are for development only and should be changed for production
-
-### Available API Endpoints
-
-**Public Endpoints (No Authentication)**:
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/products` - Get all products
-- `GET /api/products/{id}` - Get product by ID
-- `GET /api/categories` - Get all categories
-
-**Protected Endpoints (Requires JWT Token)**:
-- `GET /api/users/me` - Get current user profile
-- `GET /api/cart` - Get cart items
-- `POST /api/cart` - Add to cart
-- `GET /api/orders` - Get user orders
-- `POST /api/orders` - Place order
-
-### Testing the Backend
-Use the included `Spice_House_API_Postman_Collection.json` to test all endpoints with Postman.
-
-### Workflows Running
-1. **MySQL Server** - Database server (internal port 3306)
-2. **Spring Boot Backend** - API server (port 8080)
-3. **Vite Dev Server** - Frontend (port 5000)
+### Cart Synchronization Strategy
+- Custom events for same-tab updates
+- Storage events for cross-tab sync
+- Ensures cart stays in sync after login/logout
+- Prevents stale data across sessions
 
 ## User Preferences
 None set yet.

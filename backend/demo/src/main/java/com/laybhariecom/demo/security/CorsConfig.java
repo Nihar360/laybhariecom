@@ -10,13 +10,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
+// Disabled - using @CrossOrigin annotations on controllers instead
+//@Configuration
 public class CorsConfig {
     
     @Value("${cors.allowed.origins}")
     private String allowedOrigins;
     
-    @Bean
+    //@Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));

@@ -24,7 +24,7 @@ public class CartController {
     private final CartService cartService;
     private final UserService userService;
     
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ApiResponse> addToCart(
             Authentication authentication,
             @Valid @RequestBody CartItemRequest request) {

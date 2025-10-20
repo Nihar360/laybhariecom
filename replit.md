@@ -14,7 +14,35 @@ Full-stack e-commerce application for "SPICE HOUSE" - a premium Malvani spice re
 
 ## Recent Changes
 
-### October 20, 2025 - Navigation Fix and UI Update (Latest)
+### October 20, 2025 - VS Code Compatibility & Database Schema Fix (Latest)
+- ✅ **Fixed Cart Database Schema Issue**:
+  - Root cause: cart_items table had extra cart_id column causing "Field 'cart_id' doesn't have a default value" error
+  - Created schema.sql with correct table structure (no cart_id column)
+  - Changed Hibernate ddl-auto from "update" to "none" to prevent auto-generation issues
+  - Added automatic cart_id removal logic in schema.sql for existing databases
+  
+- ✅ **Made Project Work Identically in Replit AND VS Code**:
+  - Created comprehensive VSCODE_SETUP.md with step-by-step local setup instructions
+  - Backend automatically uses correct profile (dev for local, replit for Replit)
+  - Frontend API config auto-detects environment and connects to correct backend
+  - Database schema and sample data load automatically via schema.sql and data.sql
+  - No manual configuration needed - clone from GitHub and run!
+  
+- ✅ **Database Management Improvements**:
+  - Spring Boot now uses schema.sql for table creation (consistent across environments)
+  - Spring Boot now uses data.sql for sample data loading (7 Malvani products)
+  - Automatic INSERT IGNORE prevents duplicate data on restart
+  - Database persists between sessions (no need to recreate)
+  
+- ✅ **Documentation**:
+  - Created VSCODE_SETUP.md - Quick start guide for local development
+  - Created fix-cart-schema.sql - Standalone fix for existing databases
+  - Created database_seed_real_data_fixed.sql - Fixed seed file without cart_id
+  - Updated CHANGES.md with comprehensive changelog
+
+**Result**: Project works perfectly in both Replit and VS Code after GitHub clone. All features (login, cart, checkout) working in both environments.
+
+### October 20, 2025 - Navigation Fix and UI Update
 - ✅ **Fixed Category Navigation**:
   - Problem: Clicking category cards crashed with "useNavigation must be used within a NavigationProvider"
   - Solution: Replaced custom NavigationContext with React Router's useParams() and useNavigate()

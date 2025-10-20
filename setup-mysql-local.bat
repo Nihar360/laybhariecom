@@ -52,13 +52,22 @@ mysql -u root -p%MYSQL_ROOT_PASS% -e "FLUSH PRIVILEGES;"
 echo [OK] User created and privileges granted
 
 REM Load sample data
-if exist database_seed_real_data.sql (
+if exist database_seed_real_data_fixed.sql (
+    echo Loading sample data (with cart fix)...
+    mysql -u %DB_USER% -p%DB_PASS% %DB_NAME% < database_seed_real_data_fixed.sql
+    echo [OK] Sample data loaded successfully
+) else if exist database_seed_real_data.sql (
     echo Loading sample data...
     mysql -u %DB_USER% -p%DB_PASS% %DB_NAME% < database_seed_real_data.sql
     echo [OK] Sample data loaded successfully
 ) else (
-    echo [WARNING] database_seed_real_data.sql not found. Skipping data loading.
+    echo [WARNING] database seed file not found. Skipping data loading.
 )
+
+REM Fix cart_items table if needed
+echo Applying cart schema fix...
+mysql -u %DB_USER% -p%DB_PASS% %DB_NAME% -e "ALTER TABLE cart_items DROP COLUMN IF EXISTS cart_id;" 2>nul
+echo [OK] Cart schema verified
 
 echo.
 echo =================================

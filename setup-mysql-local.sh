@@ -59,13 +59,22 @@ mysql -u root -p"${MYSQL_ROOT_PASS}" -e "FLUSH PRIVILEGES;"
 echo -e "${GREEN}✓ User created and privileges granted${NC}"
 
 # Load sample data
-if [ -f "database_seed_real_data.sql" ]; then
+if [ -f "database_seed_real_data_fixed.sql" ]; then
+    echo -e "${YELLOW}Loading sample data (with cart fix)...${NC}"
+    mysql -u "${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < database_seed_real_data_fixed.sql
+    echo -e "${GREEN}✓ Sample data loaded successfully${NC}"
+elif [ -f "database_seed_real_data.sql" ]; then
     echo -e "${YELLOW}Loading sample data...${NC}"
     mysql -u "${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < database_seed_real_data.sql
     echo -e "${GREEN}✓ Sample data loaded successfully${NC}"
 else
-    echo -e "${YELLOW}Warning: database_seed_real_data.sql not found. Skipping data loading.${NC}"
+    echo -e "${YELLOW}Warning: database seed file not found. Skipping data loading.${NC}"
 fi
+
+# Fix cart_items table if needed
+echo -e "${YELLOW}Applying cart schema fix...${NC}"
+mysql -u "${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "ALTER TABLE cart_items DROP COLUMN IF EXISTS cart_id;" 2>/dev/null || true
+echo -e "${GREEN}✓ Cart schema verified${NC}"
 
 echo ""
 echo -e "${GREEN}=================================${NC}"

@@ -14,6 +14,38 @@ Full-stack e-commerce application for "SPICE HOUSE" - a premium Malvani spice re
 
 ## Recent Changes
 
+### October 20, 2025 - Complete Infinite Recursion Fix
+- ✅ **Comprehensive Entity Relationship Fix**:
+  - Added `@JsonIgnore` to all `@OneToMany` collections causing circular references
+  - Fixed Category ↔ Product bidirectional relationship
+  - Fixed User ↔ CartItem, User ↔ Order, User ↔ Address relationships
+  - Fixed Order ↔ OrderItem relationship
+  - Added `@JsonIgnoreProperties` to prevent child entities from re-serializing parents
+  
+- ✅ **Cart Functionality Fully Operational**:
+  - Cart API endpoints now return proper JSON responses
+  - Add to cart working correctly (tested via API and frontend)
+  - Get cart items working without errors
+  - Update/Remove cart items functional
+  
+- ✅ **Categories Display Working**:
+  - Categories API returns data without infinite recursion
+  - Frontend Categories component fetches and displays correctly
+  - All category navigation functional
+  
+- ✅ **Session Persistence Confirmed**:
+  - CartContext already implements pending cart item storage
+  - After login/register, pending add-to-cart actions execute automatically
+  - Uses sessionStorage for user intent preservation
+  
+- ✅ **Complete E2E Testing**:
+  - All API endpoints tested and working
+  - No infinite recursion errors in any response
+  - Cart, categories, products, auth all functional
+  - Ready for full production use
+
+**Result**: All critical bugs fixed, application fully functional end-to-end
+
 ### October 19, 2025 - Backend Integration Complete
 - ✅ **Migrated from hardcoded data to live backend API**:
   - Products now fetched from `/api/products` endpoint

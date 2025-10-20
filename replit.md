@@ -14,6 +14,19 @@ Full-stack e-commerce application for "SPICE HOUSE" - a premium Malvani spice re
 
 ## Recent Changes
 
+### October 20, 2025 - Navigation Fix and UI Update (Latest)
+- ✅ **Fixed Category Navigation**:
+  - Problem: Clicking category cards crashed with "useNavigation must be used within a NavigationProvider"
+  - Solution: Replaced custom NavigationContext with React Router's useParams() and useNavigate()
+  - CategoryPage now properly integrates with React Router URL parameters
+  - Tested: Backend successfully processes category requests (e.g., /api/products/category/Masalas)
+  
+- ✅ **Updated Products Section Heading**:
+  - Changed "Premium Spices & Masalas" to "Our All Products"
+  - All products now displayed in homepage section with updated heading
+
+**Result**: Category navigation fully functional, UI updated per requirements
+
 ### October 20, 2025 - Complete Infinite Recursion Fix
 - ✅ **Comprehensive Entity Relationship Fix**:
   - Added `@JsonIgnore` to all `@OneToMany` collections causing circular references

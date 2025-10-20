@@ -54,12 +54,12 @@
       outDir: 'build',
     },
     server: {
-      port: 5000,
-      host: '0.0.0.0',
-      allowedHosts: ['.repl.co', '.replit.dev'],
-      hmr: {
+      port: Number(process.env.VITE_PORT) || 5000,
+      host: process.env.REPL_SLUG ? '0.0.0.0' : 'localhost',
+      allowedHosts: process.env.REPL_SLUG ? ['.repl.co', '.replit.dev'] : undefined,
+      hmr: process.env.REPL_SLUG ? {
         clientPort: 443,
-      },
+      } : true,
       proxy: {
         '/api': {
           target: 'http://localhost:8080',

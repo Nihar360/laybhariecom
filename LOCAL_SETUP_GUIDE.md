@@ -1,194 +1,440 @@
-# Local Development Setup Guide (VS Code)
+# Spice House E-Commerce - Complete Local Development Setup Guide
 
-This guide will help you run the Spice House e-commerce application on your local machine using VS Code.
+This comprehensive guide will help you set up and run the complete Spice House e-commerce application on your local VS Code environment, including all features: registration, login, add to cart, checkout, and order management.
 
-## Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-1. **Java Development Kit (JDK) 17 or higher**
-   - Download from: https://www.oracle.com/java/technologies/downloads/
-   - Or use OpenJDK: https://adoptium.net/
-   - Verify installation: `java -version`
-
-2. **Maven**
-   - Download from: https://maven.apache.org/download.cgi
-   - Verify installation: `mvn -version`
-
-3. **MySQL Server**
-   - Download from: https://dev.mysql.com/downloads/mysql/
-   - Or use XAMPP/WAMP which includes MySQL
-
-4. **Node.js and npm**
-   - Download from: https://nodejs.org/
-   - Verify installation: `node -v` and `npm -v`
-
-5. **VS Code Extensions (Recommended)**
-   - Extension Pack for Java
-   - Spring Boot Extension Pack
-   - MySQL (by Weijan Chen)
-   - ESLint
-   - Prettier
+## Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Quick Start](#quick-start)
+3. [Database Setup](#database-setup)
+4. [Backend Setup](#backend-setup)
+5. [Frontend Setup](#frontend-setup)
+6. [Running the Application](#running-the-application)
+7. [Testing All Features](#testing-all-features)
+8. [Troubleshooting](#troubleshooting)
 
 ---
 
-## Step-by-Step Setup
+## Prerequisites
 
-### 1. Clone or Download the Project
+### Required Software
+
+Install the following on your machine:
+
+1. **Java Development Kit (JDK) 17+**
+   - Download: https://adoptium.net/
+   - Verify: `java --version`
+
+2. **Maven 3.6+**
+   - Download: https://maven.apache.org/download.cgi
+   - Verify: `mvn --version`
+
+3. **MySQL 8.0+**
+   - Download: https://dev.mysql.com/downloads/mysql/
+   - Or use XAMPP/WAMP/MAMP (includes MySQL)
+   - Verify: `mysql --version`
+
+4. **Node.js 18+**
+   - Download: https://nodejs.org/
+   - Verify: `node --version` and `npm --version`
+
+5. **Git**
+   - Download: https://git-scm.com/
+   - Verify: `git --version`
+
+### Recommended VS Code Extensions
+
+- Extension Pack for Java
+- Spring Boot Extension Pack
+- MySQL (by Weijan Chen)
+- ESLint
+- Prettier - Code formatter
+- Tailwind CSS IntelliSense
+
+---
+
+## Quick Start
+
+For experienced developers, here's the quick setup:
 
 ```bash
-# If using Git
-git clone <your-repo-url>
-cd spice-house
+# 1. Setup MySQL database
+./setup-mysql-local.sh     # Mac/Linux
+setup-mysql-local.bat      # Windows
 
-# Or extract the ZIP file and navigate to the folder
+# 2. Build backend
+mvn clean install
+
+# 3. Install frontend dependencies
+npm install  # or: pnpm install
+
+# 4. Run backend (Terminal 1)
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+# 5. Run frontend (Terminal 2)
+npm run dev
+
+# 6. Open browser
+# http://localhost:5000
 ```
 
 ---
 
-### 2. Setup MySQL Database
+## Database Setup
 
-#### Option A: Using MySQL Command Line
+### Step 1: Start MySQL Service
+
+**Windows:**
+```bash
+net start MySQL80
+```
+
+**macOS:**
+```bash
+brew services start mysql
+# OR
+mysql.server start
+```
+
+**Linux:**
+```bash
+sudo systemctl start mysql
+# OR
+sudo service mysql start
+```
+
+### Step 2: Automated Setup (Recommended)
+
+We provide setup scripts that automatically create the database, user, and load sample data.
+
+**Windows:**
+```bash
+setup-mysql-local.bat
+```
+
+**macOS/Linux:**
+```bash
+chmod +x setup-mysql-local.sh
+./setup-mysql-local.sh
+```
+
+Enter your MySQL root password when prompted. The script will:
+- Create database: `ecommerce_db`
+- Create user: `ecommerce_user` with password: `ecommerce_pass_123`
+- Grant all privileges
+- Load sample product data from `database_seed_real_data.sql`
+
+### Step 3: Manual Setup (Alternative)
+
+If you prefer manual setup:
 
 ```bash
 # Login to MySQL
 mysql -u root -p
 
-# Create database and user
+# Run these commands
 CREATE DATABASE ecommerce_db;
 CREATE USER 'ecommerce_user'@'localhost' IDENTIFIED BY 'ecommerce_pass_123';
 GRANT ALL PRIVILEGES ON ecommerce_db.* TO 'ecommerce_user'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
+
+# Load sample data
+mysql -u ecommerce_user -pecommerce_pass_123 ecommerce_db < database_seed_real_data.sql
 ```
 
-#### Option B: Using MySQL Workbench
-
-1. Open MySQL Workbench
-2. Connect to your local MySQL server
-3. Run the following SQL commands:
-
-```sql
-CREATE DATABASE ecommerce_db;
-CREATE USER 'ecommerce_user'@'localhost' IDENTIFIED BY 'ecommerce_pass_123';
-GRANT ALL PRIVILEGES ON ecommerce_db.* TO 'ecommerce_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-#### Load Sample Data (Optional)
-
-If you have the database seed file:
+### Step 4: Verify Database
 
 ```bash
-mysql -u ecommerce_user -p ecommerce_db < database_seed_real_data.sql
-# Password: ecommerce_pass_123
+mysql -u ecommerce_user -pecommerce_pass_123 ecommerce_db -e "SHOW TABLES;"
 ```
+
+Expected tables: `categories`, `products`, `users`, `orders`, `cart_items`, `addresses`, etc.
 
 ---
 
-### 3. Configure Application Properties
+## Backend Setup
 
-The application is already configured to work locally. By default, it uses the `dev` profile.
+### Step 1: Configure Application Properties
 
-If you need to change database credentials, edit `src/main/resources/application-dev.properties`:
+The application is pre-configured for local development. Check `src/main/resources/application-dev.properties`:
 
 ```properties
+# Database Configuration
 spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce_db?useSSL=false&allowPublicKeyRetrieval=true
 spring.datasource.username=ecommerce_user
 spring.datasource.password=ecommerce_pass_123
+
+# CORS Configuration
+cors.allowed.origins=http://localhost:5000,http://localhost:3000,http://127.0.0.1:5000
+
+# JWT Configuration
+jwt.secret=5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+jwt.expiration=86400000
 ```
 
-**Alternative: Use Environment Variables**
+**Note:** These are development credentials. Change them for production!
 
-You can also set environment variables instead of editing the file:
+### Step 2: Build the Backend
 
 ```bash
-# Windows (PowerShell)
-$env:DATABASE_URL="jdbc:mysql://localhost:3306/ecommerce_db?useSSL=false&allowPublicKeyRetrieval=true"
-$env:DATABASE_USERNAME="ecommerce_user"
-$env:DATABASE_PASSWORD="ecommerce_pass_123"
-
-# Linux/Mac
-export DATABASE_URL="jdbc:mysql://localhost:3306/ecommerce_db?useSSL=false&allowPublicKeyRetrieval=true"
-export DATABASE_USERNAME="ecommerce_user"
-export DATABASE_PASSWORD="ecommerce_pass_123"
+# Clean previous builds and install dependencies
+mvn clean install
 ```
+
+This will:
+- Download all Maven dependencies
+- Compile Java source code
+- Run unit tests
+- Package the application as JAR file in `target/` directory
+
+### Step 3: Verify Build
+
+Check that `target/spice-house-backend-1.0.0.jar` was created successfully.
 
 ---
 
-### 4. Build the Spring Boot Backend
+## Frontend Setup
+
+### Step 1: Install Dependencies
 
 ```bash
-# Navigate to project root
-cd /path/to/spice-house
-
-# Clean and build the project
-mvn clean package
-
-# This will create a JAR file in the target/ directory
-```
-
-**If you get build errors:**
-- Ensure Java 17+ is installed: `java -version`
-- Ensure Maven is installed: `mvn -version`
-- Check that MySQL is running: `mysql -u ecommerce_user -p`
-
----
-
-### 5. Run the Spring Boot Backend
-
-#### Option A: Using Maven
-
-```bash
-mvn spring-boot:run
-```
-
-#### Option B: Using the JAR file
-
-```bash
-java -jar target/spice-house-backend-1.0.0.jar
-```
-
-#### Option C: From VS Code
-
-1. Open the project in VS Code
-2. Navigate to `src/main/java/com/laybhariecom/demo/DemoApplication.java`
-3. Click the "Run" button above the `main` method
-
-**Verify the backend is running:**
-- Open browser and visit: http://localhost:8080/api/categories
-- You should see JSON data
-
----
-
-### 6. Install Frontend Dependencies
-
-```bash
-# In the project root directory
+# Using npm
 npm install
+
+# OR using pnpm (faster, recommended)
+npm install -g pnpm
+pnpm install
 ```
+
+### Step 2: Environment Configuration
+
+A `.env.local` file has been created with default settings. For standard local development, no changes are needed.
+
+To customize (optional), edit `.env.local`:
+
+```env
+# API Base URL (default: http://localhost:8080)
+# VITE_API_URL=http://localhost:8080
+
+# Port for Vite dev server (default: 5000)
+VITE_PORT=5000
+```
+
+### Step 3: Verify Vite Configuration
+
+The `vite.config.ts` has been optimized for local development:
+- Runs on `localhost` (not 0.0.0.0) for local development
+- Hot Module Replacement (HMR) enabled
+- API proxy configured to forward `/api` requests to `localhost:8080`
 
 ---
 
-### 7. Run the Frontend (Vite Dev Server)
+## Running the Application
 
+### Method 1: Using Maven (Recommended for Development)
+
+**Terminal 1 - Backend:**
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+**Terminal 2 - Frontend:**
 ```bash
 npm run dev
 ```
 
-The frontend will start on: **http://localhost:5000**
+### Method 2: Using Pre-built JAR
+
+**Terminal 1 - Backend:**
+```bash
+java -jar target/spice-house-backend-1.0.0.jar --spring.profiles.active=dev
+```
+
+**Terminal 2 - Frontend:**
+```bash
+npm run dev
+```
+
+### Verification
+
+- **Frontend:** http://localhost:5000
+- **Backend API:** http://localhost:8080/api/products
+- **Backend Health:** http://localhost:8080/actuator/health (if actuator is enabled)
+
+You should see the Spice House homepage with products and categories!
 
 ---
 
-### 8. Access the Application
+## Testing All Features
 
-Open your browser and navigate to:
+### 1. User Registration
 
+**Via Web Interface:**
+1. Open http://localhost:5000
+2. Click "Sign Up" or navigate to http://localhost:5000/register
+3. Fill the form:
+   - **Name:** John Doe
+   - **Email:** john@example.com
+   - **Password:** Password123!
+   - **Confirm Password:** Password123!
+4. Click "Register"
+5. You should be redirected to login page
+
+**Via API (cURL):**
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "Password123!"
+  }'
 ```
-http://localhost:5000
+
+**Expected Response:**
+```json
+{
+  "message": "User registered successfully",
+  "userId": 1
+}
 ```
 
-You should see the Spice House e-commerce website!
+### 2. User Login
+
+**Via Web Interface:**
+1. Go to http://localhost:5000/login
+2. Enter:
+   - **Email:** john@example.com
+   - **Password:** Password123!
+3. Click "Login"
+4. You should see your name in the header (logged in state)
+
+**Via API (cURL):**
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "Password123!"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com"
+  }
+}
+```
+
+**Save this token for authenticated requests!**
+
+### 3. Browse Products
+
+1. Visit http://localhost:5000
+2. Explore categories: **Masalas**, **Mixes**
+3. Click on a category to filter products
+4. Click on any product to view details
+5. See product images, price, description, features, available sizes
+
+### 4. Add to Cart
+
+**Via Web Interface:**
+1. **Login first** (required for cart functionality)
+2. Navigate to any product page
+3. Select:
+   - **Size:** e.g., 100g, 250g, or 500g
+   - **Quantity:** 1, 2, 3, etc.
+4. Click "Add to Cart"
+5. You should see a success notification
+6. Cart icon in header shows item count
+
+**Via API:**
+```bash
+curl -X POST http://localhost:8080/api/cart/add \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -d '{
+    "productId": 1,
+    "quantity": 2,
+    "size": "250g"
+  }'
+```
+
+### 5. View Cart
+
+**Via Web Interface:**
+1. Click the **cart icon** in the header
+2. View all cart items:
+   - Product name, image
+   - Size and quantity
+   - Price per item
+   - Subtotal
+3. Update quantity using +/- buttons
+4. Remove items with trash icon
+5. See total price at bottom
+
+**Via API:**
+```bash
+curl http://localhost:8080/api/cart \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### 6. Checkout Process
+
+1. In cart view, click "Proceed to Checkout"
+2. **Shipping Address:**
+   - Enter or select delivery address
+   - Add new address if needed
+3. **Payment Method:**
+   - Select COD (Cash on Delivery) or other methods
+4. **Review Order:**
+   - Verify items, quantities, total
+   - Check delivery address
+5. Click "Place Order"
+6. Order confirmation page appears with order number
+
+### 7. View Order History
+
+**Via Web Interface:**
+1. Click on your profile/account menu
+2. Select "My Orders" or navigate to http://localhost:5000/orders
+3. See list of all orders:
+   - Order ID and date
+   - Items ordered
+   - Total amount
+   - Order status (Pending, Processing, Shipped, Delivered)
+
+**Via API:**
+```bash
+curl http://localhost:8080/api/orders \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### 8. Search Products
+
+1. Use the search bar in header
+2. Type product name or keyword (e.g., "masala", "mix")
+3. Press Enter or click search
+4. See filtered results
+
+### 9. Filter by Category
+
+1. Click on category name in navigation or homepage
+2. Products from that category are displayed
+3. Use "All Products" to clear filter
+
+### 10. User Profile
+
+1. Click on user icon/name in header
+2. View profile information
+3. Update profile details
+4. Manage addresses
+5. Change password
 
 ---
 
@@ -196,120 +442,166 @@ You should see the Spice House e-commerce website!
 
 ### Backend Issues
 
-**1. Cannot connect to MySQL**
+#### Issue: "Could not connect to database"
+**Solutions:**
+1. Verify MySQL is running:
+   ```bash
+   # Windows
+   net start MySQL80
+   
+   # Mac
+   mysql.server status
+   
+   # Linux
+   sudo systemctl status mysql
+   ```
+2. Test database connection:
+   ```bash
+   mysql -u ecommerce_user -pecommerce_pass_123 ecommerce_db -e "SELECT 1;"
+   ```
+3. Check credentials in `application-dev.properties`
 
-Error: `Communications link failure`
+#### Issue: "Port 8080 already in use"
+**Solutions:**
+1. Find and kill the process:
+   ```bash
+   # Mac/Linux
+   lsof -ti:8080 | xargs kill -9
+   
+   # Windows
+   netstat -ano | findstr :8080
+   taskkill /PID <PID> /F
+   ```
+2. Or change the port in `application-dev.properties`:
+   ```properties
+   server.port=8081
+   ```
 
-**Solution:**
-- Ensure MySQL is running
-- Check MySQL credentials in `application-dev.properties`
-- Try connecting via command line: `mysql -u ecommerce_user -p`
-
-**2. Port 8080 already in use**
-
-Error: `Port 8080 is already in use`
-
-**Solution:**
-- Stop other applications using port 8080
-- Or change the port in `application.properties`:
-  ```properties
-  server.port=8081
-  ```
-
-**3. Java version mismatch**
-
-Error: `UnsupportedClassVersionError`
-
-**Solution:**
-- This project requires Java 17+
-- Update your JDK or set `JAVA_HOME` to Java 17+
-
-**4. Maven build fails**
-
-**Solution:**
-```bash
-# Clear Maven cache and rebuild
-mvn clean
-mvn dependency:purge-local-repository
-mvn clean install
-```
+#### Issue: Maven build fails
+**Solutions:**
+1. Clean and rebuild:
+   ```bash
+   mvn clean
+   rm -rf target/
+   mvn clean install
+   ```
+2. Check Java version: `java --version` (must be 17+)
+3. Update Maven: `mvn --version`
 
 ### Frontend Issues
 
-**1. Port 5000 already in use**
+#### Issue: "Cannot connect to backend" / Network Error
+**Solutions:**
+1. Verify backend is running:
+   ```bash
+   curl http://localhost:8080/api/products
+   ```
+2. Check browser console for CORS errors
+3. Clear browser cache and localStorage
+4. Verify `vite.config.ts` proxy configuration
 
-**Solution:**
-- Edit `vite.config.ts` and change the port:
-  ```typescript
-  export default defineConfig({
-    server: {
-      port: 3000, // Change to any available port
-    },
-  });
-  ```
+#### Issue: "Port 5000 already in use"
+**Solutions:**
+1. Kill the process:
+   ```bash
+   # Mac/Linux
+   lsof -ti:5000 | xargs kill -9
+   
+   # Windows
+   netstat -ano | findstr :5000
+   taskkill /PID <PID> /F
+   ```
+2. Or change port in `.env.local`:
+   ```env
+   VITE_PORT=3000
+   ```
 
-**2. CORS errors**
+#### Issue: npm install fails or takes forever
+**Solutions:**
+1. Use pnpm (faster):
+   ```bash
+   npm install -g pnpm
+   pnpm install
+   ```
+2. Clear npm cache:
+   ```bash
+   npm cache clean --force
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
 
-**Solution:**
-- Ensure the backend `cors.allowed.origins` includes your frontend URL
-- Already configured for `http://localhost:5000` and `http://localhost:3000`
+### Authentication Issues
 
-**3. npm install fails**
+#### Issue: Login returns 403 or Unauthorized
+**Solutions:**
+1. Verify JWT secret is set in `application-dev.properties`
+2. Clear browser localStorage:
+   ```javascript
+   // In browser console
+   localStorage.clear()
+   ```
+3. Check backend logs for authentication errors
 
-**Solution:**
-```bash
-# Clear npm cache
-npm cache clean --force
-rm -rf node_modules package-lock.json
-npm install
-```
+#### Issue: Token expired or invalid
+**Solution:** Login again to get a new token
 
 ### Database Issues
 
-**1. Tables not created automatically**
+#### Issue: No products showing
+**Solutions:**
+1. Verify data is loaded:
+   ```bash
+   mysql -u ecommerce_user -pecommerce_pass_123 ecommerce_db -e "SELECT COUNT(*) FROM products;"
+   ```
+2. If count is 0, reload seed data:
+   ```bash
+   mysql -u ecommerce_user -pecommerce_pass_123 ecommerce_db < database_seed_real_data.sql
+   ```
 
-**Solution:**
-- The application uses `spring.jpa.hibernate.ddl-auto=update`
-- Tables should be created automatically when you start the backend
-- If not, check MySQL logs or manually import `database_seed_real_data.sql`
-
-**2. Access denied for user**
-
-**Solution:**
-```sql
-# Re-grant privileges
-GRANT ALL PRIVILEGES ON ecommerce_db.* TO 'ecommerce_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
----
-
-## Running in Different Environments
-
-### Development (Local)
-
-```bash
-# Uses application-dev.properties
-mvn spring-boot:run
-
-# Or explicitly set profile
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-### Replit Environment
-
-```bash
-# Uses application-replit.properties
-java -jar target/spice-house-backend-1.0.0.jar --spring.profiles.active=replit
-```
+#### Issue: "Table doesn't exist" errors
+**Solutions:**
+1. Let Spring Boot auto-create tables (it will on first run)
+2. Or manually run seed script which includes table creation
+3. Check `spring.jpa.hibernate.ddl-auto=update` in properties
 
 ---
 
-## VS Code Shortcuts
+## Configuration Summary
 
-- **Run Backend**: Press `F5` or click "Run and Debug" → "Spring Boot"
-- **Terminal**: Press `` Ctrl + ` `` to open integrated terminal
-- **Format Code**: Press `Shift + Alt + F`
+### Database
+- **Host:** localhost
+- **Port:** 3306
+- **Database:** ecommerce_db
+- **Username:** ecommerce_user
+- **Password:** ecommerce_pass_123
+
+### Application Ports
+- **Frontend:** http://localhost:5000
+- **Backend:** http://localhost:8080
+- **MySQL:** localhost:3306
+
+### Default Test User
+After registration, you'll have your own user. Or create one:
+- **Email:** test@example.com
+- **Password:** Test123!
+
+---
+
+## Development Tools
+
+### Postman Collection
+Import `Spice_House_API_Postman_Collection.json` into Postman to test all API endpoints.
+
+### Database GUI Tools
+- MySQL Workbench (official)
+- DBeaver (free, multi-platform)
+- phpMyAdmin (web-based)
+- TablePlus (Mac/Windows)
+
+### Hot Reload
+Both frontend and backend support hot reload:
+- **Frontend:** Vite HMR - changes reflect instantly
+- **Backend:** Spring Boot DevTools - auto-restart on code changes
 
 ---
 
@@ -317,65 +609,71 @@ java -jar target/spice-house-backend-1.0.0.jar --spring.profiles.active=replit
 
 ```
 spice-house/
-├── src/
+├── src/                          # Backend Java source
 │   ├── main/
-│   │   ├── java/          # Spring Boot backend code
+│   │   ├── java/com/laybhariecom/demo/
+│   │   │   ├── config/          # Security, CORS, etc.
+│   │   │   ├── controller/      # REST API endpoints
+│   │   │   ├── model/           # JPA entities
+│   │   │   ├── repository/      # Database repositories
+│   │   │   ├── dto/             # Data transfer objects
+│   │   │   └── exception/       # Custom exceptions
 │   │   └── resources/
-│   │       ├── application.properties          # Main config (uses env variables)
-│   │       ├── application-dev.properties      # Local development config
-│   │       └── application-replit.properties   # Replit environment config
-│   └── components/        # React frontend components
-├── pom.xml                # Maven dependencies
-├── package.json           # NPM dependencies
-├── vite.config.ts         # Vite configuration
-└── database_seed_real_data.sql  # Database seed file
+│   │       ├── application.properties
+│   │       ├── application-dev.properties
+│   │       └── application-replit.properties
+├── src/ (frontend)               # React TypeScript source
+│   ├── components/              # React components
+│   ├── pages/                   # Page components
+│   ├── contexts/                # React contexts
+│   ├── api/                     # API client
+│   └── assets/                  # Images, styles
+├── database_seed_real_data.sql  # Sample data
+├── pom.xml                      # Maven configuration
+├── package.json                 # Node dependencies
+├── vite.config.ts               # Vite configuration
+├── tailwind.config.js           # Tailwind CSS config
+├── setup-mysql-local.sh         # MySQL setup (Mac/Linux)
+├── setup-mysql-local.bat        # MySQL setup (Windows)
+└── LOCAL_SETUP_GUIDE.md         # This file
 ```
 
 ---
 
-## Important Notes
+## Additional Tips
 
-1. **Default Profile**: The application uses the `dev` profile by default, perfect for local development
+1. **Always run with `dev` profile locally:**
+   ```bash
+   mvn spring-boot:run -Dspring-boot.run.profiles=dev
+   ```
 
-2. **Database Credentials**: 
-   - Username: `ecommerce_user`
-   - Password: `ecommerce_pass_123`
-   - Database: `ecommerce_db`
-   - You can change these in `application-dev.properties`
+2. **Check backend logs for detailed error messages** - DEBUG level is enabled
 
-3. **API Endpoints**: Backend runs on port 8080
-   - Categories: http://localhost:8080/api/categories
-   - Products: http://localhost:8080/api/products
-   - Auth: http://localhost:8080/api/auth/register
+3. **Use browser DevTools Network tab** to inspect API calls
 
-4. **Frontend**: Runs on port 5000
-   - Configured to call backend at http://localhost:8080
+4. **Verify environment:**
+   ```bash
+   java --version   # 17+
+   node --version   # 18+
+   mvn --version    # 3.6+
+   mysql --version  # 8.0+
+   ```
 
-5. **CORS**: Already configured for local development
-
----
-
-## Next Steps
-
-After successful setup:
-
-1. Test the application by browsing products
-2. Try user registration and login
-3. Test adding items to cart
-4. Place test orders
-
-For any issues not covered here, check:
-- Spring Boot logs in the console
-- MySQL error logs
-- Browser console for frontend errors
+5. **Database too slow?** Increase MySQL buffer pool size in my.cnf
 
 ---
 
-## Contact & Support
+## Need Help?
 
-If you encounter any issues, please:
-1. Check the troubleshooting section above
-2. Review Spring Boot logs for specific error messages
-3. Ensure all prerequisites are properly installed
+If you're still stuck after trying troubleshooting steps:
 
-Happy coding! 🎉
+1. **Check logs:** Backend console + Browser console
+2. **Verify services:** MySQL + Backend + Frontend all running
+3. **Test connectivity:** Can backend reach database? Can frontend reach backend?
+4. **Check firewall:** Ensure ports 3306, 5000, 8080 are not blocked
+
+---
+
+**Happy Coding! 🎉**
+
+Your Spice House e-commerce application is now ready for local development with full registration, login, cart, checkout, and order management functionality!

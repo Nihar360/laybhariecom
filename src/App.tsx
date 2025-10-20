@@ -11,6 +11,7 @@ import { CategoryPage } from './pages/CategoryPage';
 import { ProductDetailsPage } from './pages/ProductDetailsPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { OrderSuccessPage } from './pages/OrderSuccessPage';
+import { OrderHistoryPage } from './pages/OrderHistoryPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { LoginForm } from './components/auth/LoginForm';
 import { RegisterForm } from './components/auth/RegisterForm';
@@ -101,6 +102,17 @@ export default function App() {
                 <ProtectedRoute>
                   <Layout hideHeader>
                     <OrderSuccessPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <OrderHistoryPage />
                   </Layout>
                 </ProtectedRoute>
               }

@@ -1,46 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { useNavigation } from '../contexts/NavigationContext';
-import { CheckCircle, Package, Truck, X, MapPin, Calendar } from 'lucide-react';
+import { CheckCircle, Package, Truck, X, MapPin, Calendar, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-
-interface OrderData {
-  items: Array<{
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-    quantity: number;
-    size?: string;
-    color?: string;
-  }>;
-  address: {
-    fullName: string;
-    mobile: string;
-    email: string;
-    addressLine1: string;
-    addressLine2: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
-  pricing: {
-    subtotal: number;
-    discount: number;
-    shipping: number;
-    total: number;
-  };
-  paymentMethod: string;
-  orderDate: string;
-}
+import { ordersService } from '../api/orders';
+import { toast } from 'sonner';
+import type { Order } from '../types/api';
 
 export function OrderSuccessPage() {
-  const { navigateTo, pageData } = useNavigation();
+  const { orderNumber } = useParams<{ orderNumber: string }>();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [orderData, setOrderData] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const orderData = pageData as OrderData | null;
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      if (!orderNumber) {
+        toast.error('Order number not found');
+        navigate('/');
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await ordersService.getOrderByNumber(orderNumber);
+        if (response.success && response.data) {
+          setOrderData(response.data);
+        } else {
+          toast.error('Order not found');
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error fetching order:', error);
+        toast.error('Failed to load order details');
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderNumber, navigate]);
 
   const handleViewOrderDetails = () => {
     if (orderData) {
@@ -69,6 +71,21 @@ export function OrderSuccessPage() {
 
     return `${formatDate(minDate)} - ${formatDate(maxDate)}`;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-green-500 mx-auto mb-4" />
+          <p className="text-gray-600">Loading order details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!orderData) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
@@ -116,7 +133,7 @@ export function OrderSuccessPage() {
           <Button
             size="lg"
             className="w-full bg-black hover:bg-gray-800"
-            onClick={() => navigateTo('home')}
+            onClick={() => navigate('/')}
           >
             Continue Shopping
           </Button>
@@ -189,13 +206,13 @@ export function OrderSuccessPage() {
                         >
                           <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
                             <ImageWithFallback
-                              src={item.image}
-                              alt={item.name}
+                              src={item.productImage}
+                              alt={item.productName}
                               className="w-full h-full object-cover"
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-gray-900 truncate">{item.name}</h4>
+                            <h4 className="font-medium text-gray-900 truncate">{item.productName}</h4>
                             {(item.size || item.color) && (
                               <p className="text-sm text-gray-500">
                                 {item.size && `Size: ${item.size}`}
@@ -206,7 +223,7 @@ export function OrderSuccessPage() {
                             <p className="text-sm text-gray-600 mt-1">Quantity: {item.quantity}</p>
                           </div>
                           <div className="text-right flex-shrink-0">
-                            <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                            <p className="font-semibold text-gray-900">${item.subtotal.toFixed(2)}</p>
                             <p className="text-xs text-gray-500">${item.price.toFixed(2)} each</p>
                           </div>
                         </div>
@@ -220,21 +237,21 @@ export function OrderSuccessPage() {
                       Delivery Address
                     </h3>
                     <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                      <p className="font-medium text-gray-900">{orderData.address.fullName}</p>
-                      <p className="text-gray-700">{orderData.address.addressLine1}</p>
-                      {orderData.address.addressLine2 && (
-                        <p className="text-gray-700">{orderData.address.addressLine2}</p>
+                      <p className="font-medium text-gray-900">{orderData.shippingAddress.fullName}</p>
+                      <p className="text-gray-700">{orderData.shippingAddress.addressLine1}</p>
+                      {orderData.shippingAddress.addressLine2 && (
+                        <p className="text-gray-700">{orderData.shippingAddress.addressLine2}</p>
                       )}
                       <p className="text-gray-700">
-                        {orderData.address.city}, {orderData.address.state} {orderData.address.zipCode}
+                        {orderData.shippingAddress.city}, {orderData.shippingAddress.state} {orderData.shippingAddress.zipCode}
                       </p>
-                      <p className="text-gray-700">{orderData.address.country}</p>
+                      <p className="text-gray-700">{orderData.shippingAddress.country}</p>
                       <div className="pt-2 mt-2 border-t border-gray-200 space-y-1">
                         <p className="text-sm text-gray-600">
-                          <span className="font-medium">Phone:</span> {orderData.address.mobile}
+                          <span className="font-medium">Phone:</span> {orderData.shippingAddress.mobile}
                         </p>
                         <p className="text-sm text-gray-600">
-                          <span className="font-medium">Email:</span> {orderData.address.email}
+                          <span className="font-medium">Email:</span> {orderData.shippingAddress.email}
                         </p>
                       </div>
                     </div>
@@ -245,32 +262,44 @@ export function OrderSuccessPage() {
                     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                       <div className="flex justify-between text-gray-700">
                         <span>Subtotal</span>
-                        <span>${orderData.pricing.subtotal.toFixed(2)}</span>
+                        <span>${orderData.subtotal.toFixed(2)}</span>
                       </div>
-                      {orderData.pricing.discount > 0 && (
+                      {orderData.discount > 0 && (
                         <div className="flex justify-between text-green-600">
                           <span>Discount</span>
-                          <span>-${orderData.pricing.discount.toFixed(2)}</span>
+                          <span>-${orderData.discount.toFixed(2)}</span>
                         </div>
                       )}
                       <div className="flex justify-between text-gray-700">
                         <span>Shipping Charges</span>
                         <span>
-                          {orderData.pricing.shipping === 0 ? (
+                          {orderData.shipping === 0 ? (
                             <span className="text-green-600 font-medium">FREE</span>
                           ) : (
-                            `$${orderData.pricing.shipping.toFixed(2)}`
+                            `$${orderData.shipping.toFixed(2)}`
                           )}
                         </span>
                       </div>
                       <div className="border-t border-gray-300 pt-3 flex justify-between text-lg font-bold text-gray-900">
                         <span>Total Amount</span>
-                        <span>${orderData.pricing.total.toFixed(2)}</span>
+                        <span>${orderData.total.toFixed(2)}</span>
                       </div>
                       <div className="pt-2 border-t border-gray-200 mt-2">
                         <p className="text-sm text-gray-600">
                           <span className="font-medium">Payment Method:</span>{' '}
-                          {orderData.paymentMethod === 'razorpay' ? 'Online Payment' : 'Cash on Delivery'}
+                          {orderData.paymentMethod}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <span className="font-medium">Order Number:</span>{' '}
+                          {orderData.orderNumber}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <span className="font-medium">Order Date:</span>{' '}
+                          {new Date(orderData.orderDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
                         </p>
                       </div>
                     </div>
@@ -290,7 +319,7 @@ export function OrderSuccessPage() {
                   <Button
                     onClick={() => {
                       setShowModal(false);
-                      navigateTo('home');
+                      navigate('/');
                     }}
                     className="flex-1 bg-black hover:bg-gray-800"
                   >

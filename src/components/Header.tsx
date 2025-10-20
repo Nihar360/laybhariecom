@@ -92,7 +92,14 @@ export function Header() {
           <p className="text-gray-600">Free shipping on orders over $25 | Fresh spices delivered</p>
           <div className="flex gap-4">
             <button className="text-gray-600 hover:text-black">Help</button>
-            <button className="text-gray-600 hover:text-black">Track Order</button>
+            {user && (
+              <button 
+                onClick={() => navigate('/orders')}
+                className="text-gray-600 hover:text-black"
+              >
+                My Orders
+              </button>
+            )}
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigation } from '../contexts/NavigationContext';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { productsService } from '@/api';
 import type { Product } from '@/types/api';
@@ -15,8 +15,9 @@ import {
 } from '../components/ui/select';
 
 export function CategoryPage() {
-  const { pageData, goBack, navigateTo } = useNavigation();
-  const categoryName = pageData?.category || 'All Products';
+  const { categoryName } = useParams<{ categoryName: string }>();
+  const navigate = useNavigate();
+  const displayCategoryName = categoryName || 'All Products';
   
   const [sortBy, setSortBy] = useState('featured');
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,7 +27,7 @@ export function CategoryPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = categoryName === 'All Products'
+        const response = !categoryName || categoryName === 'All Products'
           ? await productsService.getAllProducts()
           : await productsService.getProductsByCategory(categoryName);
         
@@ -62,7 +63,7 @@ export function CategoryPage() {
   });
 
   const handleProductClick = (productId: number) => {
-    navigateTo('product', { productId });
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -71,7 +72,7 @@ export function CategoryPage() {
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-6">
           <button
-            onClick={goBack}
+            onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-gray-600 hover:text-black mb-4"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -79,7 +80,7 @@ export function CategoryPage() {
           </button>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl mb-2">{categoryName}</h1>
+              <h1 className="text-3xl mb-2">{displayCategoryName}</h1>
               <p className="text-gray-600">{sortedProducts.length} products</p>
             </div>
             <Select value={sortBy} onValueChange={setSortBy}>
@@ -107,7 +108,7 @@ export function CategoryPage() {
         ) : sortedProducts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">No products found in this category.</p>
-            <Button onClick={goBack}>Go Back</Button>
+            <Button onClick={() => navigate(-1)}>Go Back</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

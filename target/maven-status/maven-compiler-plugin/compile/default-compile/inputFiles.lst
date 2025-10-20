@@ -3,8 +3,8 @@
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/dto/request/OrderRequest.java
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/controller/CartController.java
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/config/SecurityConfig.java
-/home/runner/workspace/src/main/java/com/laybhariecom/demo/model/OrderItem.java
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/model/Product.java
+/home/runner/workspace/src/main/java/com/laybhariecom/demo/model/OrderItem.java
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/dto/response/AddressResponse.java
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/repository/CartItemRepository.java
 /home/runner/workspace/src/main/java/com/laybhariecom/demo/dto/response/OrderResponse.java

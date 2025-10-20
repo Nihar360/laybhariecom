@@ -72,9 +72,36 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     refreshCart();
     
+    // Check for pending cart item after login/register
+    const checkPendingCartItem = async () => {
+      if (authService.isAuthenticated()) {
+        const pendingCartItem = sessionStorage.getItem('pendingCartItem');
+        if (pendingCartItem) {
+          try {
+            const item = JSON.parse(pendingCartItem);
+            sessionStorage.removeItem('pendingCartItem');
+            sessionStorage.removeItem('returnUrl');
+            
+            // Add the pending item to cart
+            const response = await cartService.addToCart(item);
+            if (response.success) {
+              await refreshCart();
+              toast.success('Item added to cart successfully');
+            }
+          } catch (error) {
+            console.error('Error adding pending cart item:', error);
+            toast.error('Failed to add item to cart');
+          }
+        }
+      }
+    };
+    
+    checkPendingCartItem();
+    
     // Listen for auth changes (same-tab via custom event)
     const handleAuthChange = () => {
       refreshCart();
+      checkPendingCartItem();
     };
     
     // Listen for storage events to detect auth changes (cross-tab)
@@ -95,7 +122,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = async (item: CartItemRequest) => {
     if (!authService.isAuthenticated()) {
+      // Store the pending cart action before redirecting
+      sessionStorage.setItem('pendingCartItem', JSON.stringify(item));
+      sessionStorage.setItem('returnUrl', window.location.pathname);
       toast.error('Please login to add items to cart');
+      // Redirect to login page after a short delay
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1500);
       return;
     }
 
@@ -104,6 +138,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (response.success && response.data) {
         // Refresh cart to get updated state
         await refreshCart();
+        toast.success('Item added to cart successfully');
       }
     } catch (error) {
       console.error('Error adding to cart:', error);

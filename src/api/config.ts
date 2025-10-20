@@ -7,12 +7,23 @@ const getBackendUrl = () => {
     return import.meta.env.VITE_API_URL;
   }
   
-  // Use the same hostname as the frontend but port 8080
-  // This works in both Replit (127.0.0.1 or replit.dev) and local development
   const hostname = window.location.hostname;
   const protocol = window.location.protocol;
   
-  // In Replit, both frontend (port 5000) and backend (port 8080) are accessible via the same hostname
+  // In Replit environment (replit.dev domain), don't use port numbers
+  // Replit proxies ports through the main domain
+  if (hostname.includes('replit.dev') || hostname.includes('repl.co')) {
+    // On Replit, the backend runs on the same domain without port specification
+    // Just use /api directly - Vite will proxy it to port 8080
+    return '';  // Empty string means same origin, handled by Vite proxy
+  }
+  
+  // For local development, use localhost:8080
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return `${protocol}//${hostname}:8080`;
+  }
+  
+  // Default fallback
   return `${protocol}//${hostname}:8080`;
 };
 

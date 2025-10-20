@@ -25,7 +25,15 @@ export function LoginForm() {
 
     try {
       await login(formData.email, formData.password);
-      navigate('/');
+      
+      // Check for return URL (don't remove pending cart item - CartContext will handle it)
+      const returnUrl = sessionStorage.getItem('returnUrl');
+      
+      if (returnUrl) {
+        navigate(returnUrl);
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {

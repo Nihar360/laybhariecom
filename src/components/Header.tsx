@@ -1,8 +1,11 @@
-import { Search, User, Menu, Heart, LogOut } from 'lucide-react';
+import { Search, User, Menu, Heart, LogOut, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from './ui/input';
 import { CartDrawer } from './CartDrawer';
 import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect, useRef } from 'react';
+import { productsService } from '../api';
+import type { Product } from '../types/api';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +16,65 @@ import {
 export function Header() {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const searchProducts = async () => {
+      if (searchQuery.trim().length < 2) {
+        setSearchResults([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      try {
+        const response = await productsService.searchProducts(searchQuery.trim());
+        if (response.success && response.data) {
+          setSearchResults(response.data.slice(0, 5));
+          setShowSuggestions(true);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchProducts, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  const handleProductClick = (productId: number) => {
+    setShowSuggestions(false);
+    setSearchQuery('');
+    navigate(`/product/${productId}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setShowSuggestions(false);
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowSuggestions(false);
+  };
 
   return (
     <header className="border-b sticky top-0 bg-white z-50">
@@ -37,15 +99,62 @@ export function Header() {
           </Link>
 
           {/* Search bar - hidden on mobile */}
-          <div className="hidden md:flex items-center flex-1 max-w-xl mx-8">
-            <div className="relative w-full">
+          <div className="hidden md:flex items-center flex-1 max-w-xl mx-8" ref={searchRef}>
+            <form onSubmit={handleSearchSubmit} className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
                 type="text"
                 placeholder="Search for products..."
-                className="pl-10 w-full"
+                className="pl-10 pr-10 w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.length >= 2 && searchResults.length > 0 && setShowSuggestions(true)}
               />
-            </div>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+              
+              {showSuggestions && searchResults.length > 0 && (
+                <div className="absolute top-full mt-2 w-full bg-white border rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+                  {searchResults.map((product) => (
+                    <button
+                      key={product.id}
+                      onClick={() => handleProductClick(product.id)}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                    >
+                      <img
+                        src={product.images[0] || '/placeholder.png'}
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                      <div className="flex-1 text-left">
+                        <p className="font-medium text-sm">{product.name}</p>
+                        <p className="text-sm text-gray-600">${product.price.toFixed(2)}</p>
+                      </div>
+                      {!product.inStock && (
+                        <span className="text-xs bg-gray-500 text-white px-2 py-1 rounded">
+                          Out of Stock
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                  {searchQuery.trim().length >= 2 && (
+                    <button
+                      onClick={handleSearchSubmit}
+                      className="w-full p-3 text-sm text-center text-primary hover:bg-gray-50 font-medium"
+                    >
+                      View all results for "{searchQuery}"
+                    </button>
+                  )}
+                </div>
+              )}
+            </form>
           </div>
 
           {/* Actions */}

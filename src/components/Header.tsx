@@ -33,6 +33,8 @@ export function Header() {
   }, []);
 
   useEffect(() => {
+    let isCurrent = true;
+
     const searchProducts = async () => {
       if (searchQuery.trim().length < 2) {
         setSearchResults([]);
@@ -42,18 +44,24 @@ export function Header() {
 
       try {
         const response = await productsService.searchProducts(searchQuery.trim());
-        if (response.success && response.data) {
+        if (isCurrent && response.success && response.data) {
           setSearchResults(response.data.slice(0, 5));
           setShowSuggestions(true);
         }
       } catch (error) {
-        console.error('Search error:', error);
-        setSearchResults([]);
+        if (isCurrent) {
+          console.error('Search error:', error);
+          setSearchResults([]);
+        }
       }
     };
 
     const debounceTimer = setTimeout(searchProducts, 300);
-    return () => clearTimeout(debounceTimer);
+    
+    return () => {
+      isCurrent = false;
+      clearTimeout(debounceTimer);
+    };
   }, [searchQuery]);
 
   const handleProductClick = (productId: number) => {

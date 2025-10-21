@@ -13,6 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryName(String categoryName);
     List<Product> findByInStockTrue();
     List<Product> findByNameContainingIgnoreCase(String name);
+    List<Product> findByStockCountLessThanAndInStockTrue(Integer stockCount);
     
     @Query("SELECT p FROM Product p WHERE p.category.name = :categoryName AND p.inStock = true")
     List<Product> findAvailableProductsByCategory(@Param("categoryName") String categoryName);

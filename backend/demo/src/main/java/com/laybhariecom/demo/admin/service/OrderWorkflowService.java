@@ -31,6 +31,7 @@ public class OrderWorkflowService {
         Order.OrderStatus.PENDING,
         Order.OrderStatus.CONFIRMED,
         Order.OrderStatus.PROCESSING,
+        Order.OrderStatus.PACKED,
         Order.OrderStatus.SHIPPED,
         Order.OrderStatus.DELIVERED
     );
@@ -38,9 +39,7 @@ public class OrderWorkflowService {
     public Page<OrderResponse> getAllOrders(Pageable pageable, Order.OrderStatus status) {
         Page<Order> orders;
         if (status != null) {
-            orders = orderRepository.findAll(pageable)
-                .map(order -> order)
-                .filter(order -> order.getStatus() == status);
+            orders = orderRepository.findByStatus(status, pageable);
         } else {
             orders = orderRepository.findAll(pageable);
         }

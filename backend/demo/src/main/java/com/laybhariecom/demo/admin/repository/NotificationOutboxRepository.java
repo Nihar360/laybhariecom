@@ -31,4 +31,6 @@ public interface NotificationOutboxRepository extends JpaRepository<Notification
     
     @Query("SELECT COUNT(n) FROM NotificationOutbox n WHERE n.status = 'SENT' AND n.sentAt BETWEEN :startDate AND :endDate")
     long countSentNotificationsByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    
+    List<NotificationOutbox> findByStatusOrderByCreatedAtAsc(NotificationOutbox.NotificationStatus status);
 }

@@ -70,13 +70,22 @@ export const adminAuthService = {
 
   async verifyToken(): Promise<boolean> {
     try {
-      await api.get('/api/admin/auth/verify', {
+      const token = this.getToken();
+      if (!token) {
+        return false;
+      }
+      
+      const response = await api.get('/api/admin/auth/verify', {
         headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      return true;
-    } catch {
+      
+      return response.data?.valid === true;
+    } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        this.logout();
+      }
       return false;
     }
   },

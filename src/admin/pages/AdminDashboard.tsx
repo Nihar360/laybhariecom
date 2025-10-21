@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, ShoppingCart, Package, TrendingUp } from 'lucide-react';

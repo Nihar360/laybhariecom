@@ -13,7 +13,7 @@ export default function AdminAuthGuard({
   requiredPermission,
   requiredPermissions,
 }: AdminAuthGuardProps) {
-  const { isAuthenticated, isLoading, hasPermission, hasAnyPermission, user } = useAdminAuth();
+  const { isAuthenticated, isLoading, hasPermission, hasAnyPermission } = useAdminAuth();
   const location = useLocation();
 
   if (isLoading) {

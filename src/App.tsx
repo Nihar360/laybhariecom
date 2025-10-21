@@ -18,6 +18,13 @@ import { RegisterForm } from './components/auth/RegisterForm';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Toaster } from './components/ui/sonner';
 
+import { AdminAuthProvider } from './admin/contexts/AdminAuthContext';
+import AdminAuthGuard from './admin/components/AdminAuthGuard';
+import AdminLayout from './admin/components/AdminLayout';
+import AdminLogin from './admin/pages/AdminLogin';
+import AdminDashboard from './admin/pages/AdminDashboard';
+import AccessDenied from './admin/pages/AccessDenied';
+
 function HomePage() {
   return (
     <>
@@ -43,84 +50,110 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
-            
-            <Route
-              path="/"
-              element={
-                <Layout>
-                  <HomePage />
-                  <Footer />
-                </Layout>
-              }
-            />
-            
-            <Route
-              path="/category/:categoryName"
-              element={
-                <Layout>
-                  <CategoryPage />
-                </Layout>
-              }
-            />
-            
-            <Route
-              path="/product/:id"
-              element={
-                <Layout>
-                  <ProductDetailsPage />
-                </Layout>
-              }
-            />
-            
-            <Route
-              path="/search"
-              element={
-                <Layout>
-                  <SearchResultsPage />
-                </Layout>
-              }
-            />
-            
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Layout hideHeader>
-                    <CheckoutPage />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route
-              path="/order-success/:orderNumber"
-              element={
-                <ProtectedRoute>
-                  <Layout hideHeader>
-                    <OrderSuccessPage />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
+        <AdminAuthProvider>
+          <CartProvider>
+            <Routes>
+              {/* Customer Routes */}
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/register" element={<RegisterForm />} />
+              
+              <Route
+                path="/"
+                element={
                   <Layout>
-                    <OrderHistoryPage />
+                    <HomePage />
+                    <Footer />
                   </Layout>
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </CartProvider>
+                }
+              />
+              
+              <Route
+                path="/category/:categoryName"
+                element={
+                  <Layout>
+                    <CategoryPage />
+                  </Layout>
+                }
+              />
+              
+              <Route
+                path="/product/:id"
+                element={
+                  <Layout>
+                    <ProductDetailsPage />
+                  </Layout>
+                }
+              />
+              
+              <Route
+                path="/search"
+                element={
+                  <Layout>
+                    <SearchResultsPage />
+                  </Layout>
+                }
+              />
+              
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Layout hideHeader>
+                      <CheckoutPage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/order-success/:orderNumber"
+                element={
+                  <ProtectedRoute>
+                    <Layout hideHeader>
+                      <OrderSuccessPage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <OrderHistoryPage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/access-denied" element={<AccessDenied />} />
+              
+              <Route
+                path="/admin"
+                element={
+                  <AdminAuthGuard>
+                    <AdminLayout />
+                  </AdminAuthGuard>
+                }
+              >
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="users" element={<div className="text-center py-8">Users page - Coming soon</div>} />
+                <Route path="orders" element={<div className="text-center py-8">Orders page - Coming soon</div>} />
+                <Route path="products" element={<div className="text-center py-8">Products page - Coming soon</div>} />
+                <Route path="coupons" element={<div className="text-center py-8">Coupons page - Coming soon</div>} />
+                <Route path="analytics" element={<div className="text-center py-8">Analytics page - Coming soon</div>} />
+                <Route path="notifications" element={<div className="text-center py-8">Notifications page - Coming soon</div>} />
+                <Route path="settings" element={<div className="text-center py-8">Settings page - Coming soon</div>} />
+              </Route>
+              
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </CartProvider>
+        </AdminAuthProvider>
       </AuthProvider>
     </BrowserRouter>
   );

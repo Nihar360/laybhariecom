@@ -25,7 +25,6 @@ import {
   X,
   ShieldCheck,
   Bell,
-  Mail,
 } from 'lucide-react';
 
 interface NavItem {

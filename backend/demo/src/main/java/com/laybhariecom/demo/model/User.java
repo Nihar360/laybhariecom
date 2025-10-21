@@ -60,9 +60,4 @@ public class User {
     
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    
-    public enum Role {
-        CUSTOMER,
-        ADMIN
-    }
 }

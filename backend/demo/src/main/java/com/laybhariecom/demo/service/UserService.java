@@ -3,6 +3,7 @@ package com.laybhariecom.demo.service;
 import com.laybhariecom.demo.dto.request.RegisterRequest;
 import com.laybhariecom.demo.exception.BadRequestException;
 import com.laybhariecom.demo.exception.ResourceNotFoundException;
+import com.laybhariecom.demo.model.Role;
 import com.laybhariecom.demo.model.User;
 import com.laybhariecom.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class UserService implements UserDetailsService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setMobile(request.getMobile());
-        user.setRole(User.Role.CUSTOMER);
+        user.setRole(Role.CUSTOMER);
         user.setActive(true);
         
         return userRepository.save(user);

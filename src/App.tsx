@@ -23,6 +23,10 @@ import AdminAuthGuard from './admin/components/AdminAuthGuard';
 import AdminLayout from './admin/components/AdminLayout';
 import AdminLogin from './admin/pages/AdminLogin';
 import AdminDashboard from './admin/pages/AdminDashboard';
+import AdminUsers from './admin/pages/AdminUsers';
+import AdminOrders from './admin/pages/AdminOrders';
+import AdminProducts from './admin/pages/AdminProducts';
+import AdminCoupons from './admin/pages/AdminCoupons';
 import AccessDenied from './admin/pages/AccessDenied';
 
 function HomePage() {
@@ -141,10 +145,10 @@ export default function App() {
               >
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="users" element={<div className="text-center py-8">Users page - Coming soon</div>} />
-                <Route path="orders" element={<div className="text-center py-8">Orders page - Coming soon</div>} />
-                <Route path="products" element={<div className="text-center py-8">Products page - Coming soon</div>} />
-                <Route path="coupons" element={<div className="text-center py-8">Coupons page - Coming soon</div>} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="coupons" element={<AdminCoupons />} />
                 <Route path="analytics" element={<div className="text-center py-8">Analytics page - Coming soon</div>} />
                 <Route path="notifications" element={<div className="text-center py-8">Notifications page - Coming soon</div>} />
                 <Route path="settings" element={<div className="text-center py-8">Settings page - Coming soon</div>} />

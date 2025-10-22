@@ -40,15 +40,15 @@ public class UserService implements UserDetailsService {
             throw new BadRequestException("Email already exists");
         }
         
-        if (request.getMobile() != null && userRepository.existsByMobile(request.getMobile())) {
-            throw new BadRequestException("Mobile number already exists");
+        if (request.getPhone() != null && userRepository.existsByPhone(request.getPhone())) {
+            throw new BadRequestException("Phone number already exists");
         }
         
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setMobile(request.getMobile());
+        user.setPhone(request.getPhone());  // Changed from setMobile
         user.setRole(User.Role.CUSTOMER);
         user.setActive(true);
         

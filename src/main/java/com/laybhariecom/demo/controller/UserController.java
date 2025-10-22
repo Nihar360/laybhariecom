@@ -26,7 +26,7 @@ public class UserController {
         userProfile.put("id", user.getId());
         userProfile.put("fullName", user.getFullName());
         userProfile.put("email", user.getEmail());
-        userProfile.put("mobile", user.getMobile());
+        userProfile.put("mobile", user.getPhone());
         userProfile.put("role", user.getRole());
         userProfile.put("active", user.getActive());
         userProfile.put("createdAt", user.getCreatedAt());

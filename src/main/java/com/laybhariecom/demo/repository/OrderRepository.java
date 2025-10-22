@@ -16,10 +16,13 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    
+    // Basic queries
     Optional<Order> findByOrderNumber(String orderNumber);
     List<Order> findByUserOrderByOrderDateDesc(User user);
     List<Order> findByUser(User user);
     
+    // User-related dashboard queries
     @Query("SELECT COUNT(o) FROM Order o WHERE o.user.id = :userId")
     Long countByUserId(@Param("userId") Long userId);
     
@@ -29,15 +32,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT MAX(o.orderDate) FROM Order o WHERE o.user.id = :userId")
     LocalDateTime findLatestOrderDateByUserId(@Param("userId") Long userId);
     
+    // Date range queries for dashboard
     @Query("SELECT o FROM Order o WHERE o.orderDate BETWEEN :startDate AND :endDate ORDER BY o.orderDate DESC")
-    List<Order> findByOrderDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
-    
-    List<Order> findByStatus(Order.OrderStatus status);
-    Page<Order> findByStatus(Order.OrderStatus status, Pageable pageable);
+    List<Order> findByOrderDateBetween(@Param("startDate") LocalDateTime startDate, 
+                                       @Param("endDate") LocalDateTime endDate);
     
     @Query("SELECT COUNT(o) FROM Order o WHERE o.orderDate BETWEEN :startDate AND :endDate")
-    Long countByOrderDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    Long countByOrderDateBetween(@Param("startDate") LocalDateTime startDate, 
+                                 @Param("endDate") LocalDateTime endDate);
     
     @Query("SELECT SUM(o.total) FROM Order o WHERE o.orderDate BETWEEN :startDate AND :endDate")
-    BigDecimal sumTotalByOrderDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    BigDecimal sumTotalByOrderDateBetween(@Param("startDate") LocalDateTime startDate, 
+                                          @Param("endDate") LocalDateTime endDate);
+    
+    // Status-based queries
+    List<Order> findByStatus(Order.OrderStatus status);
+    
+    Page<Order> findByStatus(Order.OrderStatus status, Pageable pageable);
 }

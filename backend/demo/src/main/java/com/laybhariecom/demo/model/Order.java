@@ -82,6 +82,7 @@ public class Order {
         PENDING,
         CONFIRMED,
         PROCESSING,
+        PACKED,        // Added - referenced in OrderWorkflowService
         SHIPPED,
         DELIVERED,
         CANCELLED,

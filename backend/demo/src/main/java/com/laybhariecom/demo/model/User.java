@@ -30,10 +30,11 @@ public class User {
     private String email;
     
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
     
     @Column(unique = true)
-    private String mobile;
+    private String phone;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -60,4 +61,9 @@ public class User {
     
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    
+    public enum Role {
+        CUSTOMER,
+        ADMIN
+    }
 }

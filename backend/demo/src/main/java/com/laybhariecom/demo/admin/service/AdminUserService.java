@@ -98,10 +98,12 @@ public class AdminUserService {
     }
     
     private UserDetailResponse mapToUserDetailResponse(User user) {
+        // Get user statistics - all methods can return null, so we handle it
         Long totalOrders = orderRepository.countByUserId(user.getId());
         BigDecimal totalSpent = orderRepository.sumTotalAmountByUserId(user.getId());
         LocalDateTime lastOrderDate = orderRepository.findLatestOrderDateByUserId(user.getId());
         
+        // Build response with null-safe defaults
         return UserDetailResponse.builder()
             .id(user.getId())
             .fullName(user.getFullName())
@@ -111,7 +113,7 @@ public class AdminUserService {
             .active(user.getActive())
             .totalOrders(totalOrders != null ? totalOrders : 0L)
             .totalSpent(totalSpent != null ? totalSpent : BigDecimal.ZERO)
-            .lastOrderDate(lastOrderDate)
+            .lastOrderDate(lastOrderDate)  // Can be null - that's fine
             .createdAt(user.getCreatedAt())
             .updatedAt(user.getUpdatedAt())
             .build();

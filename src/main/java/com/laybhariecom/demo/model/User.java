@@ -14,9 +14,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Data                    // ← THIS IS REQUIRED
+@NoArgsConstructor       // ← THIS IS REQUIRED
+@AllArgsConstructor 
 public class User {
     
     @Id
@@ -34,7 +34,7 @@ public class User {
     private String password;
     
     @Column(unique = true)
-    private String mobile;
+    private String phone;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

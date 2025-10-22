@@ -63,7 +63,8 @@
             "vite": "6.3.5"
       },
       "scripts": {
-            "dev": "vite",
-            "build": "vite build"
+            "dev": "vite --force",
+    "dev:clear": "rm -rf node_modules/.vite && npm run dev",
+    "clean": "rm -rf node_modules/.vite build dist && npm install"
       }
 }

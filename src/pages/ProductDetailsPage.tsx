@@ -79,6 +79,10 @@ export function ProductDetailsPage() {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
+  // Remove duplicate sizes and colors
+  const uniqueSizes = product.sizes ? [...new Set(product.sizes)] : [];
+  const uniqueColors = product.colors ? [...new Set(product.colors)] : [];
+
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       toast.error('Please login to add items to cart');
@@ -86,11 +90,11 @@ export function ProductDetailsPage() {
       return;
     }
 
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+    if (uniqueSizes.length > 0 && !selectedSize) {
       toast.error('Please select a size');
       return;
     }
-    if (product.colors && product.colors.length > 0 && !selectedColor) {
+    if (uniqueColors.length > 0 && !selectedColor) {
       toast.error('Please select a color');
       return;
     }
@@ -116,11 +120,11 @@ export function ProductDetailsPage() {
       return;
     }
 
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+    if (uniqueSizes.length > 0 && !selectedSize) {
       toast.error('Please select a size');
       return;
     }
-    if (product.colors && product.colors.length > 0 && !selectedColor) {
+    if (uniqueColors.length > 0 && !selectedColor) {
       toast.error('Please select a color');
       return;
     }
@@ -241,11 +245,11 @@ export function ProductDetailsPage() {
             <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
             {/* Size Selection */}
-            {product.sizes && product.sizes.length > 0 && (
+            {uniqueSizes.length > 0 && (
               <div className="space-y-3">
                 <label className="text-sm font-medium">Size</label>
                 <div className="flex gap-2 flex-wrap">
-                  {product.sizes.map((size) => (
+                  {uniqueSizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -263,11 +267,11 @@ export function ProductDetailsPage() {
             )}
 
             {/* Color Selection */}
-            {product.colors && product.colors.length > 0 && (
+            {uniqueColors.length > 0 && (
               <div className="space-y-3">
                 <label className="text-sm font-medium">Color</label>
                 <div className="flex gap-2 flex-wrap">
-                  {product.colors.map((color) => (
+                  {uniqueColors.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
@@ -284,27 +288,28 @@ export function ProductDetailsPage() {
               </div>
             )}
 
-            {/* Quantity */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Quantity</label>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-100"
-                  disabled={!product.inStock}
-                >
-                  -
-                </button>
-                <span className="w-12 text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.min(product.stockCount, quantity + 1))}
-                  className="w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-100"
-                  disabled={!product.inStock}
-                >
-                  +
-                </button>
-              </div>
-            </div>
+{/* Quantity */}
+<div className="space-y-3">
+  <label className="text-sm font-medium">Quantity</label>
+  {/* The gap has been reduced from gap-4 to gap-2 */}
+  <div className="flex items-center gap-2">
+    <button
+      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+      className="w-12 h-12 border border-gray-300 rounded-lg hover:bg-gray-100"
+      disabled={!product.inStock}
+    >
+      -
+    </button>
+    <span className="w-12 text-center">{quantity}</span>
+    <button
+      onClick={() => setQuantity(Math.min(product.stockCount, quantity + 1))}
+      className="w-12 h-12 border border-gray-300 rounded-lg hover:bg-gray-100"
+      disabled={!product.inStock}
+    >
+      +
+    </button>
+  </div>
+</div>
 
             {/* Action Buttons */}
             <div className="flex gap-4">
@@ -359,37 +364,40 @@ export function ProductDetailsPage() {
           </div>
         </div>
 
-        {/* Tabs Section */}
-        <Tabs defaultValue="description" className="mt-12">
-          <TabsList className="grid w-full max-w-xl grid-cols-2">
-            <TabsTrigger value="description">Description</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews ({product.reviews})</TabsTrigger>
-          </TabsList>
-          <TabsContent value="description" className="space-y-4 mt-6">
-            <div>
-              <h3 className="text-xl mb-4">Product Description</h3>
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
-            </div>
-            {product.features && product.features.length > 0 && (
-              <div>
-                <h3 className="text-xl mb-4">Key Features</h3>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-green-600 mt-1">✓</span>
-                      <span className="text-gray-600">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </TabsContent>
-          <TabsContent value="reviews" className="mt-6">
-            <div className="text-center py-12 text-gray-500">
-              <p>No reviews yet. Be the first to review this product!</p>
-            </div>
-          </TabsContent>
-        </Tabs>
+       {/* Tabs Section */}
+<Tabs defaultValue="description" className="mt-12">
+  {/* By adding 'mx-auto', the TabsList will be centered horizontally. */}
+  <TabsList className="grid w-full max-w-xl grid-cols-2 mx-auto mb-6">
+    <TabsTrigger value="description">Description</TabsTrigger>
+    <TabsTrigger value="reviews">Reviews ({product.reviews})</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="description" className="space-y-6">
+    <div>
+      <h3 className="text-xl font-semibold mb-3">Product Description</h3>
+      <p className="text-gray-600 leading-relaxed">{product.description}</p>
+    </div>
+    {product.features && product.features.length > 0 && (
+      <div>
+        <h3 className="text-xl font-semibold mb-3">Key Features</h3>
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {product.features.map((feature, index) => (
+            <li key={index} className="flex items-start gap-3">
+              <span className="text-green-600 mt-1">✓</span>
+              <span className="text-gray-600">{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </TabsContent>
+  
+  <TabsContent value="reviews">
+    <div className="text-center py-12 text-gray-500">
+      <p>No reviews yet. Be the first to review this product!</p>
+    </div>
+  </TabsContent>
+</Tabs>
       </div>
     </div>
   );

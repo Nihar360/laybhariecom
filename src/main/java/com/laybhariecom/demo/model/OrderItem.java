@@ -14,30 +14,42 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     @JsonIgnore
     private Order order;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-    
+
     @Column(nullable = false)
     private Integer quantity;
-    
+
     private String size;
-    
+
     private String color;
-    
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
-    
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal total;
+
+    @PrePersist
+    @PreUpdate
+    protected void calculateTotals() {  // Changed from private to protected
+        if (price != null && quantity != null) {
+            this.subtotal = price.multiply(BigDecimal.valueOf(quantity));
+            this.total = this.subtotal;
+        }
+    }
 }

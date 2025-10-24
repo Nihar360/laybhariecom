@@ -76,7 +76,11 @@ public class OrderService {
             orderItem.setSize(cartItem.getSize());
             orderItem.setColor(cartItem.getColor());
             orderItem.setPrice(product.getPrice());
-            orderItem.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+            
+            // Calculate subtotal and total for this order item
+            BigDecimal itemSubtotal = product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            orderItem.setSubtotal(itemSubtotal);
+            orderItem.setTotal(itemSubtotal);  // ✅ FIXED: Added this line
             
             orderItems.add(orderItem);
             subtotal = subtotal.add(orderItem.getSubtotal());

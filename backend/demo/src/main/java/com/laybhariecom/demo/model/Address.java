@@ -44,7 +44,7 @@ public class Address {
     @Column(nullable = false)
     private String state;
 
-    @Column(nullable = false)
+   @Column(name = "zip_code", nullable = false)  
     private String zipCode;
 
     @Column(nullable = false)
